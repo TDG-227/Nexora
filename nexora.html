@@ -592,7 +592,7 @@ body{font-family:"DM Sans",sans-serif;}
     font-family: 'Syne', sans-serif;
     font-size: 48px;
     font-weight: 800;
-    color: rgba(249,115,22,0.12);
+    color: rgba(249,115,22,0.85);
     line-height: 1;
     margin-bottom: 20px;
     letter-spacing: -2px;
@@ -1169,17 +1169,25 @@ body{font-family:"DM Sans",sans-serif;}
   </ul>
 </footer>
 
+<script>
   // Intersection observer for fade-in animations on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        entry.target.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
-      }
-    });
-  }, { threshold: 0.1 });
-
+  if (!window._nexoraObserver) {
+    window._nexoraObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          entry.target.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+        }
+      });
+    }, { threshold: 0.1 });
+  }
+  document.querySelectorAll('.module-card, .step, .price-card, .stat').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    window._nexoraObserver.observe(el);
+  });
+</script>
 </div>
 
 
