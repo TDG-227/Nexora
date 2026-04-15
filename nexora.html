@@ -83,8 +83,11 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
 </style>
 
 <div class="login-left">
+<div style="position:absolute;top:20px;left:20px;z-index:10;">
+  <button onclick="goHome()" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#9B9BA4;padding:7px 14px;border-radius:8px;font-size:12px;font-family:Syne,sans-serif;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='#F0EEE8'" onmouseout="this.style.color='#9B9BA4'">&#8592; Back to Home</button>
+</div>
 <div class="login-box">
-  <div class="login-logo"><span class="lw">NEX</span><span class="lo">ORA</span></div>
+  <div class="login-logo" onclick="goHome()" style="cursor:pointer;" title="Back to Home"><span class="lw">NEX</span><span class="lo">ORA</span></div>
   <div class="login-tagline">Your Business, Fully Automated</div>
   <div id="login-error" class="login-error"></div>
   <div id="login-success" class="login-success"></div>
