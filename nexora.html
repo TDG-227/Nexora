@@ -859,6 +859,7 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
     <li><a href="#modules">Modules</a></li>
     <li><a href="#how">How it works</a></li>
     <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#" class="nav-cta" onclick="showDashboard(event)">Open Dashboard →</a></li>
   </ul>
 </nav>
@@ -1152,6 +1153,159 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
 </section>
 
 <!-- CTA -->
+
+<!-- CONTACT FORM SECTION -->
+<section id="contact" style="padding:120px 60px;background:rgba(249,115,22,0.03);border-top:1px solid rgba(249,115,22,0.1);">
+  <div style="max-width:700px;margin:0 auto;text-align:center;">
+    
+    <!-- Section header -->
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.25);color:#F97316;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:24px;">
+      ✉️ Get In Touch
+    </div>
+    
+    <h2 style="font-family:Syne,sans-serif;font-size:42px;font-weight:800;letter-spacing:-1px;color:#F0EEE8;margin-bottom:16px;">Ready to Automate<br>Your Business?</h2>
+    <p style="color:#888;font-size:15px;margin-bottom:48px;line-height:1.7;">Book a free demo or ask us anything. We typically respond within 2 hours during business hours.</p>
+
+    <!-- Contact Form -->
+    <form id="contact-form" onsubmit="submitContactForm(event)" style="text-align:left;">
+      
+      <!-- Name + Company row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Full Name *</label>
+          <input type="text" id="cf-name" placeholder="Your full name" required
+            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
+            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Company Name *</label>
+          <input type="text" id="cf-company" placeholder="Your company" required
+            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
+            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        </div>
+      </div>
+
+      <!-- Email + Phone row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Email Address *</label>
+          <input type="email" id="cf-email" placeholder="you@company.com" required
+            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
+            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Phone Number</label>
+          <input type="tel" id="cf-phone" placeholder="+1 234 567 8900"
+            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
+            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        </div>
+      </div>
+
+      <!-- Plan selection -->
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Interested In</label>
+        <select id="cf-plan"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;cursor:pointer;"
+          onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <option value="" style="background:#1A1A1C;">Select a plan...</option>
+          <option value="starter" style="background:#1A1A1C;">Starter — $1,000/month</option>
+          <option value="professional" style="background:#1A1A1C;">Professional — $1,500/month</option>
+          <option value="enterprise" style="background:#1A1A1C;">Enterprise — $2,500/month</option>
+          <option value="demo" style="background:#1A1A1C;">Just want a free demo first</option>
+        </select>
+      </div>
+
+      <!-- Message -->
+      <div style="margin-bottom:24px;">
+        <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Message</label>
+        <textarea id="cf-message" placeholder="Tell us about your business and what you'd like to automate..." rows="4"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;resize:vertical;"
+          onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'"></textarea>
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" id="cf-submit"
+        style="width:100%;background:#F97316;color:#fff;border:none;border-radius:10px;padding:16px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(249,115,22,0.3);"
+        onmouseover="this.style.background='#EA6A00';this.style.transform='translateY(-1px)'"
+        onmouseout="this.style.background='#F97316';this.style.transform='translateY(0)'">
+        Send Message — Book Free Demo →
+      </button>
+
+      <!-- Success message -->
+      <div id="cf-success" style="display:none;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:10px;padding:16px;margin-top:16px;text-align:center;color:#4ADE80;font-family:Syne,sans-serif;font-size:14px;font-weight:600;">
+        ✅ Message sent! We'll get back to you within 2 hours. 😊
+      </div>
+
+      <!-- Error message -->
+      <div id="cf-error" style="display:none;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:10px;padding:16px;margin-top:16px;text-align:center;color:#F87171;font-family:Syne,sans-serif;font-size:14px;">
+        ❌ Something went wrong. Please email us directly at nexora.thedossgroup@gmail.com
+      </div>
+    </form>
+
+    <!-- Contact info -->
+    <div style="display:flex;justify-content:center;gap:24px;margin-top:40px;flex-wrap:wrap;">
+      <a href="mailto:nexora.thedossgroup@gmail.com" style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#F97316'" onmouseout="this.style.color='#888'">
+        ✉️ nexora.thedossgroup@gmail.com
+      </a>
+      <a href="tel:+16478472022" style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#F97316'" onmouseout="this.style.color='#888'">
+        📞 +1 647 847 2022
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+async function submitContactForm(e) {
+  e.preventDefault();
+  var btn = document.getElementById('cf-submit');
+  var success = document.getElementById('cf-success');
+  var error = document.getElementById('cf-error');
+  
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  success.style.display = 'none';
+  error.style.display = 'none';
+
+  var name    = document.getElementById('cf-name').value;
+  var company = document.getElementById('cf-company').value;
+  var email   = document.getElementById('cf-email').value;
+  var phone   = document.getElementById('cf-phone').value;
+  var plan    = document.getElementById('cf-plan').value;
+  var message = document.getElementById('cf-message').value;
+
+  // Use FormSubmit.co - free form submission service
+  try {
+    var response = await fetch('https://formsubmit.co/ajax/nexora.thedossgroup@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'New Nexora Enquiry from ' + name + ' — ' + company,
+        Name: name,
+        Company: company,
+        Email: email,
+        Phone: phone || 'Not provided',
+        Plan: plan || 'Not selected',
+        Message: message || 'No message provided',
+        _template: 'table'
+      })
+    });
+
+    if (response.ok) {
+      success.style.display = 'block';
+      document.getElementById('contact-form').reset();
+    } else {
+      error.style.display = 'block';
+    }
+  } catch(err) {
+    error.style.display = 'block';
+  }
+
+  btn.textContent = 'Send Message — Book Free Demo →';
+  btn.disabled = false;
+}
+</script>
+
 <section class="cta-section">
   <h2 class="cta-title">Ready to run your company on autopilot?</h2>
   <p class="cta-sub">Join the companies already using Nexora to operate faster, leaner, and smarter than their competition.</p>
