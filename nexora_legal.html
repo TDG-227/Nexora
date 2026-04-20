@@ -442,6 +442,22 @@ function showTab(tab) {
   // Scroll to top of content
   window.scrollTo({ top: 200, behavior: 'smooth' });
 }
+
+// Auto open correct tab based on URL hash
+window.addEventListener('load', function() {
+  var hash = window.location.hash.replace('#', '');
+  var stored = sessionStorage.getItem('legalTab');
+  var tab = hash || stored || 'terms';
+  if (['terms', 'privacy', 'refund'].includes(tab)) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+    var tabs = document.querySelectorAll('.tab');
+    var tabIndex = ['terms', 'privacy', 'refund'].indexOf(tab);
+    if (tabs[tabIndex]) tabs[tabIndex].classList.add('active');
+  }
+  sessionStorage.removeItem('legalTab');
+});
 </script>
 </body>
 </html>
