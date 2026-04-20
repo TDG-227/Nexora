@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal — Nexora by TheDossGroup</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0A0A0B; color: #F0EEE8; font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.8; }
+
+/* Nav */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,11,0.95);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+.logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; text-decoration: none; }
+.logo .nex { color: #F0EEE8; }
+.logo .ora { color: #F97316; }
+.back-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #9B9BA4;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Syne', sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.back-btn:hover { color: #F0EEE8; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 80px 60px 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(249,115,22,0.1);
+  border: 1px solid rgba(249,115,22,0.25);
+  color: #F97316;
+  font-size: 11px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+.hero p { color: #888; font-size: 15px; max-width: 500px; margin: 0 auto; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 60px 0;
+}
+.tab {
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: #888;
+  transition: all 0.2s;
+}
+.tab.active {
+  background: #F97316;
+  border-color: #F97316;
+  color: #fff;
+}
+.tab:hover:not(.active) { color: #F0EEE8; border-color: rgba(255,255,255,0.25); }
+
+/* Content */
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 40px 120px;
+}
+.section { display: none; }
+.section.active { display: block; }
+
+.last-updated {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 40px;
+  font-family: 'Syne', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #F0EEE8;
+  margin: 40px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(249,115,22,0.2);
+}
+h2:first-of-type { margin-top: 0; }
+
+p { color: #AAAAAA; font-size: 14px; margin-bottom: 14px; line-height: 1.8; }
+
+ul {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+}
+ul li {
+  color: #AAAAAA;
+  font-size: 14px;
+  padding: 6px 0 6px 20px;
+  position: relative;
+  line-height: 1.7;
+}
+ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  background: #F97316;
+  border-radius: 50%;
+}
+
+.highlight-box {
+  background: rgba(249,115,22,0.06);
+  border: 1px solid rgba(249,115,22,0.2);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+.highlight-box p { color: #D0CEC8; margin: 0; }
+
+.contact-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 40px;
+  text-align: center;
+}
+.contact-box h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #F0EEE8;
+  margin-bottom: 8px;
+}
+.contact-box p { margin: 0; }
+.contact-box a { color: #F97316; text-decoration: none; }
+.contact-box a:hover { text-decoration: underline; }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 30px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  color: #444;
+  font-size: 12px;
+}
+footer a { color: #F97316; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><span class="nex">NEX</span><span class="ora">ORA</span></a>
+  <a href="/" class="back-btn">&#8592; Back to Home</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">⚖️ Legal</div>
+  <h1>Legal & Privacy</h1>
+  <p>We believe in transparency. Read how Nexora works, what data we collect, and how we protect your information.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('terms')">Terms of Service</button>
+  <button class="tab" onclick="showTab('privacy')">Privacy Policy</button>
+  <button class="tab" onclick="showTab('refund')">Refund Policy</button>
+</div>
+
+<!-- TERMS OF SERVICE -->
+<div class="content">
+<div id="terms" class="section active">
+  <p class="last-updated">Last updated: April 2026</p>
+
+  <div class="highlight-box">
+    <p>By accessing or using Nexora, you agree to be bound by these Terms of Service. Please read them carefully before using our platform.</p>
+  </div>
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>These Terms of Service ("Terms") govern your access to and use of Nexora, an AI-powered business operating system provided by TheDossGroup ("we", "us", or "our"). By creating an account or using our services, you agree to these Terms.</p>
+
+  <h2>2. Description of Service</h2>
+  <p>Nexora is an AI-powered Digital Chief of Staff platform that provides:</p>
+  <ul>
+    <li>Automated email screening and drafting</li>
+    <li>Calendar and scheduling management</li>
+    <li>AI-powered lead generation and outreach</li>
+    <li>Business reporting and intelligence</li>
+    <li>Phone call handling via AI voice assistant</li>
+    <li>File and task management automation</li>
+  </ul>
+
+  <h2>3. Account Registration</h2>
+  <p>To use Nexora you must create an account by providing accurate and complete information. You are responsible for:</p>
+  <ul>
+    <li>Maintaining the confidentiality of your account credentials</li>
+    <li>All activities that occur under your account</li>
+    <li>Notifying us immediately of any unauthorised use</li>
+    <li>Ensuring your contact information remains accurate and up to date</li>
+  </ul>
+
+  <h2>4. Subscription and Billing</h2>
+  <p>Nexora is offered on a subscription basis with the following plans:</p>
+  <ul>
+    <li><strong>Starter:</strong> $1,000/month — 1 user, core AI features</li>
+    <li><strong>Professional:</strong> $1,500/month — up to 5 users, advanced features</li>
+    <li><strong>Enterprise:</strong> $2,500/month — unlimited users, custom AI training</li>
+  </ul>
+  <p>Subscriptions are billed monthly. Payment is due at the start of each billing cycle. Failure to pay may result in suspension of your account.</p>
+
+  <h2>5. Acceptable Use</h2>
+  <p>You agree not to use Nexora to:</p>
+  <ul>
+    <li>Send spam or unsolicited commercial communications</li>
+    <li>Violate any applicable laws or regulations</li>
+    <li>Infringe upon the rights of third parties</li>
+    <li>Attempt to gain unauthorised access to our systems</li>
+    <li>Use the service for any illegal or fraudulent purpose</li>
+  </ul>
+
+  <h2>6. AI-Generated Content</h2>
+  <p>Nexora uses artificial intelligence to generate content including emails, reports, and summaries. You acknowledge that:</p>
+  <ul>
+    <li>AI-generated content should be reviewed before use</li>
+    <li>We do not guarantee the accuracy of AI-generated content</li>
+    <li>You are responsible for any content sent or published using Nexora</li>
+    <li>AI responses may occasionally contain errors or inaccuracies</li>
+  </ul>
+
+  <h2>7. Intellectual Property</h2>
+  <p>Nexora and all associated software, designs, and content are owned by TheDossGroup. You may not copy, modify, distribute, or reverse engineer any part of our platform without written permission.</p>
+
+  <h2>8. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by law, TheDossGroup shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of Nexora, including but not limited to loss of revenue, data, or business opportunities.</p>
+
+  <h2>9. Termination</h2>
+  <p>We reserve the right to suspend or terminate your account at any time if you violate these Terms. You may cancel your subscription at any time by contacting us. Upon termination, your access to Nexora will cease immediately.</p>
+
+  <h2>10. Changes to Terms</h2>
+  <p>We may update these Terms from time to time. We will notify you of significant changes via email. Your continued use of Nexora after changes constitutes acceptance of the updated Terms.</p>
+
+  <h2>11. Governing Law</h2>
+  <p>These Terms are governed by the laws of Canada. Any disputes shall be resolved in the courts of Ontario, Canada.</p>
+
+  <div class="contact-box">
+    <h3>Questions about our Terms?</h3>
+    <p>Contact us at <a href="mailto:nexora.thedossgroup@gmail.com">nexora.thedossgroup@gmail.com</a> or call <a href="tel:+16478472022">+1 647 847 2022</a></p>
+  </div>
+</div>
+
+<!-- PRIVACY POLICY -->
+<div id="privacy" class="section">
+  <p class="last-updated">Last updated: April 2026</p>
+
+  <div class="highlight-box">
+    <p>Your privacy is important to us. This policy explains what data we collect, how we use it, and how we protect it.</p>
+  </div>
+
+  <h2>1. Information We Collect</h2>
+  <p>We collect the following types of information:</p>
+  <ul>
+    <li><strong>Account information:</strong> Name, email address, company name, and role</li>
+    <li><strong>Usage data:</strong> How you interact with Nexora features and dashboard</li>
+    <li><strong>Email data:</strong> With your permission, we access your Gmail to screen and draft emails</li>
+    <li><strong>Calendar data:</strong> With your permission, we access your Google Calendar to manage scheduling</li>
+    <li><strong>Business data:</strong> Lead information, reports, and operational data you input</li>
+  </ul>
+
+  <h2>2. How We Use Your Information</h2>
+  <p>We use your information to:</p>
+  <ul>
+    <li>Provide and improve the Nexora service</li>
+    <li>Personalise your AI Chief of Staff experience</li>
+    <li>Send service-related communications and updates</li>
+    <li>Ensure the security and integrity of our platform</li>
+    <li>Comply with legal obligations</li>
+  </ul>
+
+  <h2>3. Data Storage and Security</h2>
+  <p>Your data is stored securely using Supabase with Row Level Security (RLS). This means:</p>
+  <ul>
+    <li>Each user can only access their own data</li>
+    <li>Data is encrypted at rest and in transit</li>
+    <li>We use industry-standard security practices</li>
+    <li>Regular security audits are performed</li>
+  </ul>
+
+  <h2>4. Third-Party Services</h2>
+  <p>Nexora integrates with the following third-party services:</p>
+  <ul>
+    <li><strong>Google (Gmail & Calendar):</strong> For email and scheduling automation</li>
+    <li><strong>Anthropic (Claude AI):</strong> For AI-powered responses and content generation</li>
+    <li><strong>Apollo.io:</strong> For lead generation and outreach</li>
+    <li><strong>Supabase:</strong> For secure data storage and authentication</li>
+    <li><strong>Railway:</strong> For cloud hosting and deployment</li>
+  </ul>
+
+  <h2>5. Data Sharing</h2>
+  <p>We do not sell your personal data to third parties. We only share data with:</p>
+  <ul>
+    <li>Service providers who help us operate Nexora</li>
+    <li>Law enforcement when required by law</li>
+    <li>Business partners with your explicit consent</li>
+  </ul>
+
+  <h2>6. Your Rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li>Access the personal data we hold about you</li>
+    <li>Request correction of inaccurate data</li>
+    <li>Request deletion of your data</li>
+    <li>Withdraw consent for data processing at any time</li>
+    <li>Export your data in a portable format</li>
+  </ul>
+
+  <h2>7. Cookies</h2>
+  <p>Nexora uses essential cookies to maintain your login session and preferences. We do not use tracking or advertising cookies. You can disable cookies in your browser settings but this may affect functionality.</p>
+
+  <h2>8. Data Retention</h2>
+  <p>We retain your data for as long as your account is active. Upon account deletion, your data is permanently removed within 30 days, except where required by law.</p>
+
+  <h2>9. Children's Privacy</h2>
+  <p>Nexora is not intended for users under the age of 18. We do not knowingly collect data from minors. If you believe we have collected data from a minor, please contact us immediately.</p>
+
+  <h2>10. Contact Us</h2>
+  <p>For privacy-related requests or questions, please contact our team.</p>
+
+  <div class="contact-box">
+    <h3>Privacy Requests</h3>
+    <p>Email us at <a href="mailto:nexora.thedossgroup@gmail.com">nexora.thedossgroup@gmail.com</a><br>
+    or call <a href="tel:+16478472022">+1 647 847 2022</a></p>
+  </div>
+</div>
+
+<!-- REFUND POLICY -->
+<div id="refund" class="section">
+  <p class="last-updated">Last updated: April 2026</p>
+
+  <div class="highlight-box">
+    <p>We want you to be completely satisfied with Nexora. If you are not happy with our service, here is how we handle refunds.</p>
+  </div>
+
+  <h2>1. 7-Day Free Trial</h2>
+  <p>New subscribers receive a 7-day free trial period. During this time you can explore all features of your chosen plan with no charge. You will only be billed after the trial period ends.</p>
+
+  <h2>2. Refund Eligibility</h2>
+  <p>You may be eligible for a refund if:</p>
+  <ul>
+    <li>You request a refund within 14 days of your first payment</li>
+    <li>You have experienced significant technical issues that we were unable to resolve</li>
+    <li>The service was not delivered as described</li>
+  </ul>
+
+  <h2>3. Non-Refundable Situations</h2>
+  <p>Refunds will not be issued in the following cases:</p>
+  <ul>
+    <li>Refund requests made after 14 days of payment</li>
+    <li>Accounts suspended due to Terms of Service violations</li>
+    <li>Partial month usage — we do not prorate refunds</li>
+    <li>Change of mind after extensive use of the platform</li>
+  </ul>
+
+  <h2>4. How to Request a Refund</h2>
+  <p>To request a refund please contact us at <a href="mailto:nexora.thedossgroup@gmail.com" style="color:#F97316;">nexora.thedossgroup@gmail.com</a> with:</p>
+  <ul>
+    <li>Your account email address</li>
+    <li>The reason for your refund request</li>
+    <li>Your invoice or payment reference number</li>
+  </ul>
+  <p>We will process all refund requests within 5-7 business days.</p>
+
+  <h2>5. Cancellation Policy</h2>
+  <p>You can cancel your Nexora subscription at any time. Cancellations take effect at the end of your current billing cycle. You will retain access to Nexora until the end of the period you have paid for.</p>
+
+  <h2>6. Enterprise Plans</h2>
+  <p>Enterprise plan refunds and cancellations are handled on a case-by-case basis as per the terms agreed in your Enterprise agreement. Please contact your account manager for details.</p>
+
+  <div class="contact-box">
+    <h3>Need help with a refund?</h3>
+    <p>Contact us at <a href="mailto:nexora.thedossgroup@gmail.com">nexora.thedossgroup@gmail.com</a><br>
+    or call <a href="tel:+16478472022">+1 647 847 2022</a><br>
+    We respond within 24 hours! 😊</p>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>© 2026 TheDossGroup. All rights reserved. &nbsp;|&nbsp;
+  <a href="/">Home</a> &nbsp;|&nbsp;
+  Nexora AI Operating System</p>
+</footer>
+
+<script>
+function showTab(tab) {
+  // Hide all sections
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  // Show selected
+  document.getElementById(tab).classList.add('active');
+  event.target.classList.add('active');
+  // Scroll to top of content
+  window.scrollTo({ top: 200, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
