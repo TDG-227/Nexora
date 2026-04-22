@@ -2975,28 +2975,141 @@ var PANEL_CONTENT = {
     title: "📅 Calendar",
     html: function() {
       var now = new Date();
+      var viewYear = now.getFullYear();
+      var viewMonth = now.getMonth();
+      var todayDate = now.getDate();
       var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      return '<div style="display:grid;grid-template-columns:1fr 340px;gap:24px;">' +
-        '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:24px;">' +
-          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
-            '<span style="font-family:Syne,sans-serif;font-size:18px;font-weight:700;color:#F0EEE8;">' + months[now.getMonth()] + ' ' + now.getFullYear() + '</span>' +
-            '<div style="display:flex;gap:8px;"><button style="padding:6px 14px;background:#505054;border:1px solid rgba(255,255,255,0.12);color:#F0EEE8;border-radius:6px;cursor:pointer;font-family:Syne,sans-serif;font-size:13px;">‹</button><button style="padding:6px 14px;background:#505054;border:1px solid rgba(255,255,255,0.12);color:#F0EEE8;border-radius:6px;cursor:pointer;font-family:Syne,sans-serif;font-size:13px;">›</button></div>' +
-          '</div>' +
-          '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;">' +
-            '<div style="font-size:11px;font-family:Syne,sans-serif;color:#888;padding:4px;">Mon</div><div style="font-size:11px;font-family:Syne,sans-serif;color:#888;padding:4px;">Tue</div><div style="font-size:11px;font-family:Syne,sans-serif;color:#888;padding:4px;">Wed</div><div style="font-size:11px;font-family:Syne,sans-serif;color:#888;padding:4px;">Thu</div><div style="font-size:11px;font-family:Syne,sans-serif;color:#888;padding:4px;">Fri</div><div style="font-size:11px;font-family:Syne,sans-serif;color:#888;padding:4px;">Sat</div><div style="font-size:11px;font-family:Syne,sans-serif;color:#888;padding:4px;">Sun</div>' +
-            [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,now.getDate(),24,25,26,27,28,29,30].map(function(d){ return '<div style="padding:8px 4px;border-radius:6px;font-size:13px;cursor:pointer;transition:background .15s;' + (d===now.getDate()?'background:#F97316;color:#000;font-weight:700;':'color:#D0CEC8;') + '" onmouseover="if(this.style.background!==\'rgb(249, 115, 22)\')this.style.background=\'rgba(255,255,255,0.06)\'" onmouseout="if(this.style.background!==\'rgb(249, 115, 22)\')this.style.background=\'\'">'+d+'</div>'; }).join('') +
-          '</div>' +
-        '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:16px;">' +
-          '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;">' +
-            '<div style="font-family:Syne,sans-serif;font-size:12px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">Today\'s Events</div>' +
-            '<div style="display:flex;flex-direction:column;gap:10px;">' +
-              '<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:8px;"><div style="width:3px;background:#60A5FA;border-radius:2px;align-self:stretch;"></div><div><div style="font-size:13px;color:#F0EEE8;font-weight:400;">Stakeholder Call — AcmeCorp</div><div style="font-size:11px;color:#888;margin-top:2px;">9:00 AM · 45 min · Zoom</div></div></div>' +
-              '<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:8px;"><div style="width:3px;background:#F97316;border-radius:2px;align-self:stretch;"></div><div><div style="font-size:13px;color:#F0EEE8;font-weight:400;">Q1 Review — Internal</div><div style="font-size:11px;color:#888;margin-top:2px;">11:30 AM · 1 hr · Board Room</div></div></div>' +
-              '<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;"><div style="width:3px;background:#FBBF24;border-radius:2px;align-self:stretch;"></div><div><div style="font-size:13px;color:#F0EEE8;font-weight:400;">Investor Brief Prep</div><div style="font-size:11px;color:#888;margin-top:2px;">4:00 PM · 30 min</div></div></div>' +
+
+      function buildCalGrid(yr, mo) {
+        var firstDay = new Date(yr, mo, 1).getDay(); // 0=Sun
+        // Convert to Mon-first: Sun=6, Mon=0
+        var startOffset = firstDay === 0 ? 6 : firstDay - 1;
+        var daysInMonth = new Date(yr, mo + 1, 0).getDate();
+        var daysInPrev = new Date(yr, mo, 0).getDate();
+        var cells = '';
+        // prev month grey cells
+        for (var p = startOffset - 1; p >= 0; p--) {
+          cells += '<div style="padding:8px 4px;border-radius:6px;font-size:13px;color:#555;">' + (daysInPrev - p) + '</div>';
+        }
+        var isCurrentMonth = (yr === now.getFullYear() && mo === now.getMonth());
+        for (var d = 1; d <= daysInMonth; d++) {
+          var isToday = isCurrentMonth && d === todayDate;
+          cells += '<div onclick="window.calSelectDay(' + d + ',' + mo + ',' + yr + ',this)" style="padding:8px 4px;border-radius:6px;font-size:13px;cursor:pointer;transition:background .15s;text-align:center;' +
+            (isToday ? 'background:#F97316;color:#000;font-weight:700;' : 'color:#D0CEC8;') +
+            '" onmouseover="if(this.style.background!==\'rgb(249, 115, 22)\')this.style.background=\'rgba(255,255,255,0.06)\'" onmouseout="if(this.style.background!==\'rgb(249, 115, 22)\'&&!this.classList.contains(\'cal-selected\'))this.style.background=\'\'">' + d + '</div>';
+        }
+        // fill remaining
+        var total = startOffset + daysInMonth;
+        var rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+        for (var n = 1; n <= rem; n++) {
+          cells += '<div style="padding:8px 4px;border-radius:6px;font-size:13px;color:#555;">' + n + '</div>';
+        }
+        return cells;
+      }
+
+      window._calViewYear = viewYear;
+      window._calViewMonth = viewMonth;
+
+      window.calNav = function(dir) {
+        window._calViewMonth += dir;
+        if (window._calViewMonth > 11) { window._calViewMonth = 0; window._calViewYear++; }
+        if (window._calViewMonth < 0)  { window._calViewMonth = 11; window._calViewYear--; }
+        var months2 = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        document.getElementById('cal-month-label').textContent = months2[window._calViewMonth] + ' ' + window._calViewYear;
+        document.getElementById('cal-grid-body').innerHTML = buildCalGrid(window._calViewYear, window._calViewMonth);
+        // If Google connected, try to refresh events for this month
+        if (window.googleAccessToken) window.fetchCalendarForMonth(window._calViewYear, window._calViewMonth);
+      };
+
+      window.calSelectDay = function(d, mo, yr, el) {
+        document.querySelectorAll('#cal-grid-body div').forEach(function(c){ if(c.style.background==='rgb(249, 115, 22)' && !c.textContent.trim()===(new Date().getDate()+'')) return; c.classList.remove('cal-selected'); });
+        el.style.background = '#F97316'; el.style.color = '#000'; el.style.fontWeight = '700';
+        var dateStr = ['January','February','March','April','May','June','July','August','September','October','November','December'][mo] + ' ' + d + ', ' + yr;
+        document.getElementById('cal-selected-label').textContent = dateStr;
+        // Show placeholder events for selected day
+        var evBox = document.getElementById('cal-events-box');
+        if (evBox) {
+          evBox.innerHTML = '<div style="font-size:12px;color:#888;text-align:center;padding:20px 0;">No events on ' + d + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo] + '. Click + to add one.</div>';
+          if (window.googleAccessToken) window.fetchEventsForDay(d, mo, yr);
+        }
+      };
+
+      window.fetchCalendarForMonth = async function(yr, mo) {
+        if (!window.googleAccessToken) return;
+        try {
+          var start = new Date(yr, mo, 1).toISOString();
+          var end = new Date(yr, mo + 1, 0, 23, 59, 59).toISOString();
+          var resp = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+start+'&timeMax='+end+'&maxResults=50&singleEvents=true&orderBy=startTime', { headers: { Authorization: 'Bearer ' + window.googleAccessToken } });
+          var data = await resp.json();
+          window._calEvents = data.items || [];
+          // Highlight days with events
+          if (data.items) {
+            data.items.forEach(function(ev) {
+              var d = new Date(ev.start.dateTime || ev.start.date).getDate();
+              document.querySelectorAll('#cal-grid-body div').forEach(function(el){
+                if (parseInt(el.textContent.trim()) === d && el.style.color !== 'rgb(85, 85, 85)') {
+                  el.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.4)';
+                }
+              });
+            });
+          }
+        } catch(e) { console.error('Cal fetch error', e); }
+      };
+
+      window.fetchEventsForDay = async function(d, mo, yr) {
+        if (!window.googleAccessToken) return;
+        try {
+          var start = new Date(yr, mo, d).toISOString();
+          var end = new Date(yr, mo, d, 23, 59, 59).toISOString();
+          var resp = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+start+'&timeMax='+end+'&maxResults=10&singleEvents=true&orderBy=startTime', { headers: { Authorization: 'Bearer ' + window.googleAccessToken } });
+          var data = await resp.json();
+          var evBox = document.getElementById('cal-events-box');
+          if (!evBox) return;
+          if (!data.items || data.items.length === 0) { evBox.innerHTML = '<div style="font-size:12px;color:#888;text-align:center;padding:20px 0;">No events this day.</div>'; return; }
+          evBox.innerHTML = data.items.map(function(ev){
+            var t = ev.start.dateTime ? new Date(ev.start.dateTime).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : 'All day';
+            return '<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:8px;margin-bottom:8px;"><div style="width:3px;background:#F97316;border-radius:2px;align-self:stretch;flex-shrink:0;"></div><div><div style="font-size:13px;color:#F0EEE8;">'+(ev.summary||'(No title)')+'</div><div style="font-size:11px;color:#888;margin-top:2px;">'+t+(ev.location?' · '+ev.location:'')+'</div></div></div>';
+          }).join('');
+        } catch(e) { console.error('Day events error', e); }
+      };
+
+      var gridHtml = buildCalGrid(viewYear, viewMonth);
+
+      return '<div style="display:grid;grid-template-columns:1fr 320px;gap:20px;">' +
+        // Calendar grid
+        '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:22px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">' +
+            '<span id="cal-month-label" style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:#F0EEE8;">' + months[viewMonth] + ' ' + viewYear + '</span>' +
+            '<div style="display:flex;gap:8px;">' +
+              '<button onclick="window.calNav(-1)" style="padding:6px 14px;background:#505054;border:1px solid rgba(255,255,255,0.12);color:#F0EEE8;border-radius:6px;cursor:pointer;font-family:Syne,sans-serif;font-size:14px;transition:background .15s;" onmouseover="this.style.background=\'#606064\'" onmouseout="this.style.background=\'#505054\'">‹</button>' +
+              '<button onclick="window.calNav(1)" style="padding:6px 14px;background:#505054;border:1px solid rgba(255,255,255,0.12);color:#F0EEE8;border-radius:6px;cursor:pointer;font-family:Syne,sans-serif;font-size:14px;transition:background .15s;" onmouseover="this.style.background=\'#606064\'" onmouseout="this.style.background=\'#505054\'">›</button>' +
             '</div>' +
           '</div>' +
-          '<button onclick="connectGmail()" style="width:100%;padding:12px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:8px;font-family:Syne,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">🔗 Sync Google Calendar</button>' +
+          '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center;margin-bottom:6px;">' +
+            ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(function(d){ return '<div style="font-size:11px;font-family:Syne,sans-serif;color:#666;padding:4px 0;font-weight:600;">'+d+'</div>'; }).join('') +
+          '</div>' +
+          '<div id="cal-grid-body" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center;">' + gridHtml + '</div>' +
+        '</div>' +
+        // Right panel: events + sync
+        '<div style="display:flex;flex-direction:column;gap:14px;">' +
+          '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px;flex:1;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
+              '<div style="font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;">Events</div>' +
+              '<div id="cal-selected-label" style="font-size:11px;color:#888;">Today</div>' +
+            '</div>' +
+            '<div id="cal-events-box">' +
+              (window.googleAccessToken ?
+                '<div style="font-size:12px;color:#888;text-align:center;padding:20px 0;">Loading events...</div>' :
+                '<div style="display:flex;flex-direction:column;gap:8px;">' +
+                  '<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:8px;"><div style="width:3px;background:#60A5FA;border-radius:2px;align-self:stretch;flex-shrink:0;"></div><div><div style="font-size:13px;color:#F0EEE8;">Stakeholder Call — AcmeCorp</div><div style="font-size:11px;color:#888;margin-top:2px;">9:00 AM · 45 min · Zoom</div></div></div>' +
+                  '<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:8px;"><div style="width:3px;background:#F97316;border-radius:2px;align-self:stretch;flex-shrink:0;"></div><div><div style="font-size:13px;color:#F0EEE8;">Q1 Review — Internal</div><div style="font-size:11px;color:#888;margin-top:2px;">11:30 AM · 1 hr · Board Room</div></div></div>' +
+                  '<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;"><div style="width:3px;background:#FBBF24;border-radius:2px;align-self:stretch;flex-shrink:0;"></div><div><div style="font-size:13px;color:#F0EEE8;">Investor Brief Prep</div><div style="font-size:11px;color:#888;margin-top:2px;">4:00 PM · 30 min</div></div></div>' +
+                '</div>') +
+            '</div>' +
+          '</div>' +
+          '<button id="cal-sync-btn" onclick="window.calSyncGoogle(this)" style="width:100%;padding:12px;background:' + (window.googleAccessToken ? 'rgba(74,222,128,0.1)' : 'rgba(249,115,22,0.1)') + ';border:1px solid ' + (window.googleAccessToken ? 'rgba(74,222,128,0.3)' : 'rgba(249,115,22,0.3)') + ';color:' + (window.googleAccessToken ? '#4ADE80' : '#F97316') + ';border-radius:8px;font-family:Syne,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">' +
+            (window.googleAccessToken ? '✓ Google Calendar Synced' : '🔗 Sync Google Calendar') +
+          '</button>' +
         '</div>' +
       '</div>';
     }
@@ -3004,27 +3117,145 @@ var PANEL_CONTENT = {
   inbox: {
     title: "📧 Inbox",
     html: function() {
-      return '<div style="display:flex;gap:6px;margin-bottom:20px;">' +
-        ['All','Unread','AI Drafted','Flagged'].map(function(t,i){ return '<button onclick="this.parentNode.querySelectorAll(\'button\').forEach(function(b){b.style.background=\'rgba(255,255,255,0.06)\';b.style.color=\'#888\';});this.style.background=\'#F97316\';this.style.color=\'#000\';" style="padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:'+(i===0?'#F97316':'rgba(255,255,255,0.06)')+';color:'+(i===0?'#000':'#888')+';font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">'+t+'</button>'; }).join('') +
-        '<button onclick="connectGmail()" style="margin-left:auto;padding:6px 14px;border-radius:6px;border:1px solid rgba(249,115,22,0.3);background:rgba(249,115,22,0.1);color:#F97316;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">📧 Connect Gmail</button>' +
-      '</div>' +
-      '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;">' +
-      [['JM','James Miller','Re: Partnership proposal for Q2','Hi, following up on our call last week...','9:14 AM',true,'#60A5FA'],
-       ['SR','Sarah Reynolds','Board meeting agenda — please confirm','Attached is the draft agenda for Monday...','8:42 AM',true,'#FBBF24'],
-       ['TK','Tom Krane','Invoice #2047 — April services','Please find attached invoice for April...','7:59 AM',false,'#4ADE80'],
-       ['AC','AcmeCorp Team','Contract terms — final review','We\'ve reviewed the updated terms and...','Yesterday',true,'#F97316'],
-       ['RL','Rachel Lee','Q2 budget sign-off needed','Finance needs your approval on the Q2...','Yesterday',false,'#60A5FA'],
-       ['MP','Marcus P.','New intro — strategic partner','Thought you\'d want to connect with...','Mon',false,'#888']
-      ].map(function(e){ return '<div style="display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:background .15s;" onmouseover="this.style.background=\'rgba(255,255,255,0.04)\'" onmouseout="this.style.background=\'\'">' +
-        '<div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:'+e[6]+';flex-shrink:0;">'+e[0]+'</div>' +
-        '<div style="flex:1;min-width:0;">' +
-          '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span style="font-size:13px;font-weight:'+(e[5]?'600':'400')+';color:'+(e[5]?'#F0EEE8':'#AAA')+';">'+e[1]+'</span><span style="font-size:11px;color:#666;">'+e[4]+'</span></div>' +
-          '<div style="font-size:12px;color:'+(e[5]?'#D0CEC8':'#888')+';margin-bottom:2px;">'+e[2]+'</div>' +
-          '<div style="font-size:11px;color:#555;">'+e[3]+'</div>' +
-          (e[5]?'<span style="display:inline-block;margin-top:4px;font-size:10px;background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.3);color:#F97316;padding:2px 7px;border-radius:4px;font-family:Syne,sans-serif;font-weight:600;">✦ AI response drafted</span>':'') +
+      window._inboxEmails = [
+        {id:'1',initials:'JM',name:'James Miller',subject:'Re: Partnership proposal for Q2',preview:'Hi, following up on our call last week regarding the Q2 proposal...',time:'9:14 AM',unread:true,color:'#60A5FA',body:'Hi Mina,\n\nFollowing up on our call last week regarding the Q2 partnership proposal. We\'ve reviewed the terms and are excited about the potential collaboration.\n\nCould we schedule a call this week to discuss next steps? I\'m available Tuesday or Thursday afternoon.\n\nBest regards,\nJames Miller'},
+        {id:'2',initials:'SR',name:'Sarah Reynolds',subject:'Board meeting agenda — please confirm',preview:'Attached is the draft agenda for Monday\'s board meeting...',time:'8:42 AM',unread:true,color:'#FBBF24',body:'Hi Mina,\n\nPlease find attached the draft agenda for Monday\'s board meeting. Could you review and confirm by EOD Friday?\n\nKey items:\n1. Q1 financial review\n2. Growth strategy update\n3. Hiring plan for Q2\n\nThanks,\nSarah'},
+        {id:'3',initials:'TK',name:'Tom Krane',subject:'Invoice #2047 — April services',preview:'Please find attached invoice for April services...',time:'7:59 AM',unread:false,color:'#4ADE80',body:'Hi Mina,\n\nPlease find attached Invoice #2047 for April services totalling $2,340.\n\nPayment is due within 30 days.\n\nThank you,\nTom Krane\nFinance Lead'},
+        {id:'4',initials:'AC',name:'AcmeCorp Team',subject:'Contract terms — final review',preview:'We\'ve reviewed the updated terms and are ready to proceed...',time:'Yesterday',unread:true,color:'#F97316',body:'Hi Mina,\n\nWe\'ve reviewed the updated contract terms and are ready to proceed. A few minor points we\'d like to discuss:\n\n- Clause 4.2 on data ownership\n- Payment schedule flexibility\n\nOverall we\'re very excited to move forward with Nexora!\n\nBest,\nAcmeCorp Team'},
+        {id:'5',initials:'RL',name:'Rachel Lee',subject:'Q2 budget sign-off needed',preview:'Finance needs your approval on the Q2 budget...',time:'Yesterday',unread:false,color:'#60A5FA',body:'Hi Mina,\n\nThe Q2 budget is ready for your approval. Total allocation: $142,800. Please review and sign off at your earliest convenience.\n\nThanks,\nRachel Lee'},
+        {id:'6',initials:'MP',name:'Marcus P.',subject:'New intro — strategic partner',preview:'Thought you\'d want to connect with our new strategic partner...',time:'Mon',unread:false,color:'#888',body:'Hi Mina,\n\nI\'d like to introduce you to our new strategic partner who is looking for AI-powered operations solutions. They might be a great fit for Nexora.\n\nLet me know if you\'d like me to make the intro!\n\nBest,\nMarcus'}
+      ];
+
+      window.openEmail = function(id) {
+        var email = window._inboxEmails.find(function(e){ return e.id===id; });
+        if (!email) return;
+        // Mark as read
+        email.unread = false;
+        var listItem = document.querySelector('[data-email-id="'+id+'"]');
+        if (listItem) { listItem.style.borderLeft = 'none'; }
+
+        var viewer = document.getElementById('email-viewer');
+        if (!viewer) return;
+        viewer.style.display = 'flex';
+        viewer.innerHTML =
+          '<div style="padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.07);background:#3A3A3E;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">' +
+              '<div style="font-family:Syne,sans-serif;font-size:15px;font-weight:700;color:#F0EEE8;flex:1;padding-right:16px;">'+email.subject+'</div>' +
+              '<button onclick="document.getElementById(\'email-viewer\').style.display=\'none\'" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;flex-shrink:0;">✕</button>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+              '<div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:Syne,sans-serif;color:'+email.color+';flex-shrink:0;">'+email.initials+'</div>' +
+              '<div><div style="font-size:13px;color:#F0EEE8;">'+email.name+'</div><div style="font-size:11px;color:#888;">'+email.time+'</div></div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="padding:20px 24px;flex:1;overflow-y:auto;white-space:pre-wrap;font-size:13px;color:#D0CEC8;line-height:1.8;">'+email.body+'</div>' +
+          '<div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.07);background:#3A3A3E;">' +
+            '<div id="reply-box-'+id+'" style="display:none;margin-bottom:12px;">' +
+              '<textarea id="reply-text-'+id+'" placeholder="Write your reply..." style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 12px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;resize:vertical;min-height:80px;box-sizing:border-box;"></textarea>' +
+              '<div style="display:flex;gap:8px;margin-top:8px;">' +
+                '<button onclick="window.sendReply(\''+id+'\')" style="padding:8px 18px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Send Reply</button>' +
+                '<button onclick="window.aiDraftReply(\''+id+'\')" style="padding:8px 18px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✦ AI Draft Reply</button>' +
+                '<button onclick="window.saveDraft(\''+id+'\')" style="padding:8px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#AAAAAA;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">Save Draft</button>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:8px;">' +
+              '<button onclick="var b=document.getElementById(\'reply-box-'+id+'\');b.style.display=b.style.display===\'none\'?\'block\':\'none\'" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">↩ Reply</button>' +
+              '<button onclick="window.aiDraftReply(\''+id+'\')" style="padding:8px 16px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✦ AI Draft</button>' +
+              '<button style="padding:8px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#AAAAAA;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">→ Forward</button>' +
+              '<button style="padding:8px 14px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:#F87171;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;margin-left:auto;">🗑</button>' +
+            '</div>' +
+          '</div>';
+      };
+
+      window.aiDraftReply = async function(id) {
+        var email = window._inboxEmails.find(function(e){ return e.id===id; });
+        if (!email) return;
+        var replyBox = document.getElementById('reply-box-'+id);
+        var replyText = document.getElementById('reply-text-'+id);
+        if (replyBox) replyBox.style.display = 'block';
+        if (replyText) replyText.value = 'AI is drafting a reply...';
+        if (!window.NEXORA_CLAUDE_KEY && !window.CLAUDE_API_KEY) { if(replyText) replyText.value = 'Add your Claude API key to enable AI drafts.'; return; }
+        try {
+          var key = window.NEXORA_CLAUDE_KEY || window.CLAUDE_API_KEY || '';
+          var resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method:'POST',
+            headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+            body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:'You are Nexora, AI Chief of Staff for Mina, VP at TheDossGroup. Draft a professional, concise email reply. Sign off as Mina.',messages:[{role:'user',content:'Draft a reply to this email from '+email.name+':\n\nSubject: '+email.subject+'\n\n'+email.body}]})
+          });
+          var data = await resp.json();
+          if (data.content && data.content[0]) { if(replyText) replyText.value = data.content[0].text; }
+        } catch(e) { if(replyText) replyText.value = 'Error drafting reply. Please try again.'; }
+      };
+
+      window.sendReply = function(id) {
+        var replyText = document.getElementById('reply-text-'+id);
+        if (!replyText || !replyText.value.trim()) { alert('Please write a reply first.'); return; }
+        if (!window.googleAccessToken) { alert('Connect Gmail to send emails.'); return; }
+        alert('Reply sent! (Gmail API send would fire here)');
+        var replyBox = document.getElementById('reply-box-'+id);
+        if (replyBox) replyBox.style.display = 'none';
+      };
+
+      window.saveDraft = function(id) {
+        var replyText = document.getElementById('reply-text-'+id);
+        if (!replyText || !replyText.value.trim()) return;
+        window._emailDrafts = window._emailDrafts || [];
+        window._emailDrafts.push({ id: Date.now(), replyTo: id, body: replyText.value, saved: new Date().toLocaleTimeString() });
+        var btn = event.target;
+        btn.textContent = '✓ Saved';
+        setTimeout(function(){ btn.textContent = 'Save Draft'; }, 2000);
+      };
+
+      var filterEmails = function(filter) {
+        return window._inboxEmails.filter(function(e){
+          if (filter==='Unread') return e.unread;
+          if (filter==='AI Drafted') return e.unread;
+          return true;
+        });
+      };
+
+      window.renderEmailList = function(filter) {
+        filter = filter || 'All';
+        var emails = filterEmails(filter);
+        var list = document.getElementById('email-list-inner');
+        if (!list) return;
+        list.innerHTML = emails.map(function(e){
+          return '<div data-email-id="'+e.id+'" onclick="window.openEmail(\''+e.id+'\')" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:background .15s;border-left:3px solid '+(e.unread?'#F97316':'transparent')+';background:rgba(0,0,0,0);" onmouseover="this.style.background=\'rgba(255,255,255,0.04)\'" onmouseout="this.style.background=\'rgba(0,0,0,0)\'">' +
+            '<div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:'+e.color+';flex-shrink:0;">'+e.initials+'</div>' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span style="font-size:13px;font-weight:'+(e.unread?'600':'400')+';color:'+(e.unread?'#F0EEE8':'#AAA')+';">'+e.name+'</span><span style="font-size:11px;color:#666;flex-shrink:0;">'+e.time+'</span></div>' +
+              '<div style="font-size:12px;color:'+(e.unread?'#D0CEC8':'#888')+';margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+e.subject+'</div>' +
+              '<div style="font-size:11px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+e.preview+'</div>' +
+            '</div>' +
+            (e.unread?'<div style="width:7px;height:7px;background:#F97316;border-radius:50%;flex-shrink:0;margin-top:4px;"></div>':'') +
+          '</div>';
+        }).join('');
+        // If Gmail connected, also load real emails
+        if (window.googleAccessToken && filter==='All') window.fetchEmails();
+      };
+
+      setTimeout(function(){ window.renderEmailList('All'); }, 50);
+
+      return '<div style="display:flex;height:calc(100vh - 160px);gap:0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);">' +
+        // Left: email list
+        '<div id="email-list-pane" style="width:380px;min-width:220px;max-width:60%;flex-shrink:0;background:#3A3A3E;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.07);">' +
+          '<div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;gap:6px;flex-wrap:wrap;background:#333336;">' +
+            ['All','Unread','AI Drafted','Flagged'].map(function(t,i){
+              return '<button onclick="document.querySelectorAll(\'.inbox-filter-btn\').forEach(function(b){b.style.background=\'rgba(255,255,255,0.06)\';b.style.color=\'#888\';});this.style.background=\'#F97316\';this.style.color=\'#000\';window.renderEmailList(\''+t+'\')" class="inbox-filter-btn" style="padding:5px 12px;border-radius:5px;border:none;background:'+(i===0?'#F97316':'rgba(255,255,255,0.06)')+';color:'+(i===0?'#000':'#888')+';font-family:Syne,sans-serif;font-size:11px;font-weight:600;cursor:pointer;">'+t+'</button>';
+            }).join('') +
+            '<button onclick="connectGmail()" style="margin-left:auto;padding:5px 10px;border-radius:5px;border:1px solid rgba(249,115,22,0.3);background:rgba(249,115,22,0.1);color:#F97316;font-family:Syne,sans-serif;font-size:11px;cursor:pointer;">📧 Gmail</button>' +
+          '</div>' +
+          '<div id="email-list-inner" style="flex:1;overflow-y:auto;"></div>' +
         '</div>' +
-        (e[5]?'<div style="width:7px;height:7px;background:#F97316;border-radius:50%;flex-shrink:0;margin-top:4px;"></div>':'') +
-      '</div>'; }).join('') +
+        // Resize handle
+        '<div id="inbox-resizer" style="width:6px;background:rgba(255,255,255,0.05);cursor:col-resize;flex-shrink:0;position:relative;transition:background .15s;" onmouseover="this.style.background=\'rgba(249,115,22,0.3)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.05)\'"></div>' +
+        // Right: email viewer
+        '<div id="email-viewer" style="flex:1;background:#2E2E32;display:none;flex-direction:column;"></div>' +
+        '<div id="email-viewer-placeholder" style="flex:1;background:#2E2E32;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#555;">' +
+          '<div style="font-size:40px;margin-bottom:16px;">📧</div>' +
+          '<div style="font-size:14px;font-family:Syne,sans-serif;">Select an email to read</div>' +
+          '<div style="font-size:12px;margin-top:6px;color:#444;">'+( window.googleAccessToken ? 'Gmail connected — real emails loading' : 'Connect Gmail to load your real inbox') +'</div>' +
+        '</div>' +
       '</div>';
     }
   },
@@ -3057,55 +3288,208 @@ var PANEL_CONTENT = {
   leads: {
     title: "🎯 Lead Generation",
     html: function() {
-      return '<div style="display:flex;gap:6px;margin-bottom:20px;align-items:center;">' +
-        '<button onclick="openAIChat()" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✦ Ask AI to Find Leads</button>' +
-        '<button onclick="openDL(\'leads\')" style="padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#F0EEE8;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">⬇ Export</button>' +
-        '<div style="margin-left:auto;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;display:flex;align-items:center;gap:8px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input style="background:none;border:none;outline:none;color:#F0EEE8;font-size:13px;width:180px;" placeholder="Search leads..."/></div>' +
-      '</div>' +
-      '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;">' +
-        '<table style="width:100%;border-collapse:collapse;">' +
-          '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.07);">' +
-            ['Company','Contact','Score','Status','Value','Last Touch'].map(function(h){ return '<th style="padding:12px 16px;text-align:left;font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;">'+h+'</th>'; }).join('') +
-          '</tr></thead>' +
-          '<tbody>' +
-          [['AcmeCorp','Sarah K.','92','Hot','$12,000','2 min ago','#4ADE80'],
-           ['VelocityHQ','James R.','76','Warm','$6,500','15 min ago','#FBBF24'],
-           ['ClearPath','Omar B.','61','Engaged','$3,200','1 hr ago','#60A5FA'],
-           ['TechFlow','Dana M.','48','Cold','$8,000','2 days ago','#888'],
-           ['NovaStar','Priya T.','55','New','$4,500','1 day ago','#60A5FA'],
-           ['FutureLabs','Chris N.','83','Hot','$15,000','5 min ago','#4ADE80']
-          ].map(function(r){ return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;" onmouseover="this.style.background=\'rgba(255,255,255,0.03)\'" onmouseout="this.style.background=\'\'">' +
-            '<td style="padding:12px 16px;font-size:13px;color:#F0EEE8;font-weight:400;">'+r[0]+'</td>' +
-            '<td style="padding:12px 16px;font-size:13px;color:#AAAAAA;">'+r[1]+'</td>' +
-            '<td style="padding:12px 16px;"><span style="font-size:13px;font-weight:600;color:'+r[6]+'">'+ r[2]+'</span></td>' +
-            '<td style="padding:12px 16px;"><span style="font-size:11px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+r[6]+';font-family:Syne,sans-serif;font-weight:600;">'+r[3]+'</span></td>' +
-            '<td style="padding:12px 16px;font-size:13px;color:#AAAAAA;">'+r[4]+'</td>' +
-            '<td style="padding:12px 16px;font-size:11px;color:#666;">'+r[5]+'</td>' +
-          '</tr>'; }).join('') +
-          '</tbody>' +
-        '</table>' +
+      window._leads = [
+        {id:1,company:'AcmeCorp',contact:'Sarah K.',email:'sarah@acmecorp.com',phone:'+1 555 0101',score:92,status:'Hot',value:'$12,000',touch:'2 min ago',color:'#4ADE80',notes:'Ready to sign. Follow up on contract terms.'},
+        {id:2,company:'VelocityHQ',contact:'James R.',email:'james@velocityhq.com',phone:'+1 555 0102',score:76,status:'Warm',value:'$6,500',touch:'15 min ago',color:'#FBBF24',notes:'Interested in Professional plan. Demo scheduled.'},
+        {id:3,company:'ClearPath',contact:'Omar B.',email:'omar@clearpath.io',phone:'+1 555 0103',score:61,status:'Engaged',value:'$3,200',touch:'1 hr ago',color:'#60A5FA',notes:'Asked about integrations. Send product overview.'},
+        {id:4,company:'TechFlow',contact:'Dana M.',email:'dana@techflow.co',phone:'+1 555 0104',score:48,status:'Cold',value:'$8,000',touch:'2 days ago',color:'#888',notes:'No response to last 2 emails. Try phone call.'},
+        {id:5,company:'NovaStar',contact:'Priya T.',email:'priya@novastar.ai',phone:'+1 555 0105',score:55,status:'New',value:'$4,500',touch:'1 day ago',color:'#60A5FA',notes:'Just signed up for trial. Send onboarding email.'},
+        {id:6,company:'FutureLabs',contact:'Chris N.',email:'chris@futurelabs.io',phone:'+1 555 0106',score:83,status:'Hot',value:'$15,000',touch:'5 min ago',color:'#4ADE80',notes:'Enterprise deal. Needs custom pricing.'}
+      ];
+
+      window.openLead = function(id) {
+        var lead = window._leads.find(function(l){ return l.id===id; });
+        if (!lead) return;
+        var drawer = document.getElementById('lead-drawer');
+        if (!drawer) return;
+        drawer.style.display = 'flex';
+        drawer.innerHTML =
+          '<div style="padding:18px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;background:#333336;">' +
+            '<div style="font-family:Syne,sans-serif;font-size:15px;font-weight:700;color:#F0EEE8;">'+lead.company+'</div>' +
+            '<button onclick="document.getElementById(\'lead-drawer\').style.display=\'none\'" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;">✕</button>' +
+          '</div>' +
+          '<div style="padding:20px;flex:1;overflow-y:auto;">' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">' +
+              [['Contact',lead.contact],['Email',lead.email],['Phone',lead.phone],['Value',lead.value],['Score','<span style="color:'+lead.color+';font-weight:700;">'+lead.score+'</span>'],['Status','<span style="color:'+lead.color+';">'+lead.status+'</span>']].map(function(f){
+                return '<div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:12px;"><div style="font-size:10px;font-family:Syne,sans-serif;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">'+f[0]+'</div><div style="font-size:13px;color:#F0EEE8;">'+f[1]+'</div></div>';
+              }).join('') +
+            '</div>' +
+            '<div style="margin-bottom:16px;"><div style="font-size:11px;font-family:Syne,sans-serif;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Notes</div>' +
+            '<textarea id="lead-notes-'+id+'" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;resize:vertical;min-height:80px;box-sizing:border-box;">'+lead.notes+'</textarea></div>' +
+            '<div style="display:flex;flex-direction:column;gap:8px;">' +
+              '<button onclick="window.draftLeadEmail('+id+')" style="width:100%;padding:10px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✦ AI Draft Outreach Email</button>' +
+              '<button onclick="window.openAIChat()" style="width:100%;padding:10px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:7px;font-family:Syne,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">💬 Ask AI About This Lead</button>' +
+              '<div id="lead-email-draft-'+id+'" style="display:none;margin-top:8px;">' +
+                '<textarea id="lead-email-text-'+id+'" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:120px;box-sizing:border-box;" placeholder="AI email draft will appear here..."></textarea>' +
+                '<div style="display:flex;gap:8px;margin-top:8px;">' +
+                  '<button onclick="alert(\'Connect Gmail to send emails\')" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Send Email</button>' +
+                  '<button onclick="window._emailDrafts=window._emailDrafts||[];window._emailDrafts.push({to:\''+lead.email+'\',body:document.getElementById(\'lead-email-text-'+id+'\').value});var b=event.target;b.textContent=\'✓ Saved\';setTimeout(function(){b.textContent=\'Save Draft\'},2000)" style="padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#AAAAAA;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">Save Draft</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      };
+
+      window.draftLeadEmail = async function(id) {
+        var lead = window._leads.find(function(l){ return l.id===id; });
+        if (!lead) return;
+        var draftBox = document.getElementById('lead-email-draft-'+id);
+        var draftText = document.getElementById('lead-email-text-'+id);
+        if (draftBox) draftBox.style.display = 'block';
+        if (draftText) draftText.value = 'AI is drafting your outreach email...';
+        var key = window.NEXORA_CLAUDE_KEY || window.CLAUDE_API_KEY || '';
+        if (!key) { if(draftText) draftText.value = 'Add Apollo API key and Claude key to enable AI email drafts.'; return; }
+        try {
+          var resp = await fetch('https://api.anthropic.com/v1/messages',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+            body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:'You are Nexora, AI Chief of Staff for Mina, VP at TheDossGroup. Write a short, professional outreach email to a business lead. Be warm, concise, mention Nexora\'s value. Sign off as Mina.',messages:[{role:'user',content:'Draft an outreach email to '+lead.contact+' at '+lead.company+'. Value: '+lead.value+'. Status: '+lead.status+'. Notes: '+lead.notes}]})
+          });
+          var data = await resp.json();
+          if (data.content && data.content[0] && draftText) draftText.value = data.content[0].text;
+        } catch(e) { if(draftText) draftText.value = 'Error drafting email. Please try again.'; }
+      };
+
+      return '<div style="display:grid;grid-template-columns:1fr 340px;gap:0;height:calc(100vh - 160px);">' +
+        // Main table
+        '<div style="display:flex;flex-direction:column;overflow:hidden;">' +
+          '<div style="display:flex;gap:8px;padding:0 0 16px 0;align-items:center;flex-wrap:wrap;">' +
+            '<button onclick="openAIChat()" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✦ Ask AI to Find Leads</button>' +
+            '<button onclick="openDL(\'leads\')" style="padding:8px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#F0EEE8;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">⬇ Export</button>' +
+            '<div style="margin-left:auto;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;display:flex;align-items:center;gap:8px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input oninput="window.filterLeads(this.value)" style="background:none;border:none;outline:none;color:#F0EEE8;font-size:13px;width:160px;" placeholder="Search leads..."/></div>' +
+            '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:#F87171;padding:6px 12px;border-radius:7px;font-size:11px;font-family:Syne,sans-serif;">⚠ Apollo not connected — connect in Integrations for live leads</div>' +
+          '</div>' +
+          '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;flex:1;overflow-y:auto;">' +
+            '<table style="width:100%;border-collapse:collapse;">' +
+              '<thead style="position:sticky;top:0;background:#3A3A3E;z-index:1;"><tr>' +
+                ['Company','Contact','Score','Status','Value','Last Touch'].map(function(h){ return '<th style="padding:12px 16px;text-align:left;font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;">'+h+'</th>'; }).join('') +
+              '</tr></thead>' +
+              '<tbody id="leads-tbody">' +
+                window._leads.map(function(r){ return '<tr onclick="window.openLead('+r.id+')" style="border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;" onmouseover="this.style.background=\'rgba(255,255,255,0.04)\'" onmouseout="this.style.background=\'\'">' +
+                  '<td style="padding:12px 16px;font-size:13px;color:#F0EEE8;font-weight:500;">'+r.company+'</td>' +
+                  '<td style="padding:12px 16px;font-size:13px;color:#AAAAAA;">'+r.contact+'</td>' +
+                  '<td style="padding:12px 16px;"><span style="font-size:13px;font-weight:700;color:'+r.color+'">'+r.score+'</span></td>' +
+                  '<td style="padding:12px 16px;"><span style="font-size:11px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+r.color+';font-family:Syne,sans-serif;font-weight:600;">'+r.status+'</span></td>' +
+                  '<td style="padding:12px 16px;font-size:13px;color:#AAAAAA;">'+r.value+'</td>' +
+                  '<td style="padding:12px 16px;font-size:11px;color:#666;">'+r.touch+'</td>' +
+                '</tr>'; }).join('') +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+        // Lead drawer (hidden by default)
+        '<div id="lead-drawer" style="display:none;flex-direction:column;width:340px;background:#2E2E32;border-left:1px solid rgba(255,255,255,0.07);border-radius:0 12px 12px 0;overflow:hidden;"></div>' +
       '</div>';
     }
   },
   proposals: {
     title: "📄 Proposals",
     html: function() {
-      return '<div style="display:flex;gap:8px;margin-bottom:20px;">' +
-        '<button onclick="openAIChat()" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✦ Generate New Proposal</button>' +
-      '</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">' +
-      [['AcmeCorp Enterprise Deal','Sent · Awaiting signature','$12,000 / mo','2 days ago','#4ADE80'],
-       ['VelocityHQ Professional Plan','Draft · Under review','$6,500 / mo','5 days ago','#FBBF24'],
-       ['ClearPath Starter','Accepted · Active','$3,200 / mo','1 week ago','#4ADE80'],
-       ['TechFlow Custom','Expired · Follow-up needed','$8,000 / mo','3 weeks ago','#F87171'],
-       ['NovaStar BI Package','Draft','$4,500 / mo','1 day ago','#888'],
-       ['FutureLabs Enterprise','Sent','$15,000 / mo','Today','#60A5FA']
-      ].map(function(p){ return '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;cursor:pointer;transition:border-color .15s;" onmouseover="this.style.borderColor=\'rgba(249,115,22,0.3)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.07)\'">' +
-        '<div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:#F0EEE8;margin-bottom:6px;">'+p[0]+'</div>' +
-        '<div style="font-size:11px;color:'+p[4]+';margin-bottom:10px;">'+p[1]+'</div>' +
-        '<div style="font-size:14px;color:#F97316;font-family:Syne,sans-serif;font-weight:700;margin-bottom:6px;">'+p[2]+'</div>' +
-        '<div style="font-size:11px;color:#666;">Updated '+p[3]+'</div>' +
-      '</div>'; }).join('') +
+      window._proposals = window._proposals || [
+        {id:1,client:'AcmeCorp',plan:'Enterprise',value:'$12,000/mo',status:'Sent',statusColor:'#4ADE80',date:'2 days ago',email:'team@acmecorp.com',notes:'Awaiting signature on contract terms.'},
+        {id:2,client:'VelocityHQ',plan:'Professional',value:'$6,500/mo',status:'Draft',statusColor:'#FBBF24',date:'5 days ago',email:'james@velocityhq.com',notes:'Under internal review.'},
+        {id:3,client:'ClearPath',plan:'Starter',value:'$3,200/mo',status:'Accepted',statusColor:'#4ADE80',date:'1 week ago',email:'omar@clearpath.io',notes:'Active client.'},
+        {id:4,client:'TechFlow',plan:'Custom',value:'$8,000/mo',status:'Expired',statusColor:'#F87171',date:'3 weeks ago',email:'dana@techflow.co',notes:'Follow-up needed.'}
+      ];
+
+      window.showProposalForm = function() {
+        var formDiv = document.getElementById('proposal-form');
+        if (formDiv) formDiv.style.display = formDiv.style.display==='none'?'block':'none';
+      };
+
+      window.generateProposal = async function() {
+        var client = document.getElementById('prop-client');
+        var plan = document.getElementById('prop-plan');
+        var value = document.getElementById('prop-value');
+        var email = document.getElementById('prop-email');
+        var notes = document.getElementById('prop-notes');
+        if (!client || !client.value.trim()) { alert('Enter client name'); return; }
+        var btn = document.getElementById('prop-gen-btn');
+        if (btn) { btn.textContent = 'Generating...'; btn.disabled = true; }
+        var bodyText = '';
+        var key = window.NEXORA_CLAUDE_KEY || window.CLAUDE_API_KEY || '';
+        if (key) {
+          try {
+            var resp = await fetch('https://api.anthropic.com/v1/messages',{
+              method:'POST',
+              headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+              body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:'You are Nexora, AI Chief of Staff for Mina, VP at TheDossGroup. Write a professional business proposal email body. Be persuasive and concise.',messages:[{role:'user',content:'Write a proposal email for '+client.value+' for the '+plan.value+' plan at '+value.value+'/month. Notes: '+(notes?notes.value:'')+'. Include a subject line at the top.'}]})
+            });
+            var data = await resp.json();
+            if (data.content && data.content[0]) bodyText = data.content[0].text;
+          } catch(e) { bodyText = 'Error generating proposal. Please write manually.'; }
+        } else {
+          bodyText = 'Subject: Nexora '+plan.value+' Proposal for '+client.value+'\n\nDear '+client.value+' Team,\n\nWe are pleased to present our '+plan.value+' plan at '+value.value+'/month...\n\nBest regards,\nMina\nVP, TheDossGroup';
+        }
+        var newProp = {id:Date.now(),client:client.value,plan:plan.value,value:value.value+'/mo',status:'Draft',statusColor:'#FBBF24',date:'Just now',email:email?email.value:'',notes:notes?notes.value:'',body:bodyText};
+        window._proposals.unshift(newProp);
+        if (btn) { btn.textContent = '✦ Generate Proposal'; btn.disabled = false; }
+        window.renderProposals();
+        var formDiv = document.getElementById('proposal-form');
+        if (formDiv) formDiv.style.display = 'none';
+        window.viewProposal(newProp.id);
+      };
+
+      window.viewProposal = function(id) {
+        var prop = window._proposals.find(function(p){ return p.id===id; });
+        if (!prop) return;
+        var viewer = document.getElementById('proposal-viewer');
+        if (!viewer) return;
+        viewer.style.display = 'flex';
+        viewer.innerHTML =
+          '<div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;background:#333336;">' +
+            '<div style="font-family:Syne,sans-serif;font-size:15px;font-weight:700;color:#F0EEE8;">'+prop.client+' — '+prop.plan+'</div>' +
+            '<button onclick="document.getElementById(\'proposal-viewer\').style.display=\'none\'" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;">✕</button>' +
+          '</div>' +
+          '<div style="padding:20px;flex:1;overflow-y:auto;">' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">' +
+              [['Value',prop.value],['Status','<span style="color:'+prop.statusColor+'">'+prop.status+'</span>'],['Email',prop.email||'—']].map(function(f){
+                return '<div style="background:rgba(255,255,255,0.04);border-radius:7px;padding:10px;"><div style="font-size:10px;font-family:Syne,sans-serif;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">'+f[0]+'</div><div style="font-size:13px;color:#F0EEE8;">'+f[1]+'</div></div>';
+              }).join('') +
+            '</div>' +
+            '<textarea id="prop-body-'+id+'" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:14px;color:#D0CEC8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;resize:vertical;min-height:200px;box-sizing:border-box;line-height:1.7;">'+(prop.body||'Write your proposal here...')+'</textarea>' +
+            '<div style="display:flex;gap:8px;margin-top:12px;">' +
+              '<button onclick="alert(\'Connect Gmail to send emails\')" style="padding:9px 18px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">📧 Send to Client</button>' +
+              '<button onclick="var p=window._proposals.find(function(x){return x.id==='+id+'});if(p){p.body=document.getElementById(\'prop-body-'+id+'\').value;var b=event.target;b.textContent=\'✓ Saved\';setTimeout(function(){b.textContent=\'Save Draft\'},2000)}" style="padding:9px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#AAAAAA;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">Save Draft</button>' +
+              '<button onclick="var p=window._proposals.find(function(x){return x.id==='+id+'});if(p){p.status=\'Sent\';p.statusColor=\'#60A5FA\';window.renderProposals();document.getElementById(\'proposal-viewer\').style.display=\'none\'}" style="padding:9px 16px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60A5FA;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">Mark as Sent</button>' +
+            '</div>' +
+          '</div>';
+      };
+
+      window.renderProposals = function() {
+        var grid = document.getElementById('proposals-grid');
+        if (!grid) return;
+        grid.innerHTML = window._proposals.map(function(p){
+          return '<div onclick="window.viewProposal('+p.id+')" style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;cursor:pointer;transition:border-color .15s;" onmouseover="this.style.borderColor=\'rgba(249,115,22,0.3)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.07)\'">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:#F0EEE8;">'+p.client+'</div><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+p.statusColor+';font-family:Syne,sans-serif;font-weight:600;">'+p.status+'</span></div>' +
+            '<div style="font-size:12px;color:#888;margin-bottom:8px;">'+p.plan+' Plan</div>' +
+            '<div style="font-size:15px;color:#F97316;font-family:Syne,sans-serif;font-weight:700;margin-bottom:6px;">'+p.value+'</div>' +
+            '<div style="font-size:11px;color:#555;">Updated '+p.date+'</div>' +
+          '</div>';
+        }).join('');
+      };
+
+      setTimeout(function(){ window.renderProposals(); }, 50);
+
+      return '<div style="display:grid;grid-template-columns:1fr 380px;gap:0;height:calc(100vh - 160px);">' +
+        '<div style="display:flex;flex-direction:column;padding-right:20px;overflow:hidden;">' +
+          '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<button onclick="window.showProposalForm()" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✦ New Proposal</button>' +
+          '</div>' +
+          '<div id="proposal-form" style="display:none;background:#3A3A3E;border:1px solid rgba(249,115,22,0.2);border-radius:10px;padding:18px;margin-bottom:16px;">' +
+            '<div style="font-family:Syne,sans-serif;font-size:12px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">New Proposal</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">' +
+              '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Client Name</label><input id="prop-client" placeholder="e.g. AcmeCorp" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+              '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Plan</label><select id="prop-plan" style="width:100%;background:#505054;border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;"><option>Starter</option><option>Professional</option><option>Enterprise</option><option>Custom</option></select></div>' +
+              '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Monthly Value ($)</label><input id="prop-value" type="number" placeholder="5000" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+              '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Client Email</label><input id="prop-email" type="email" placeholder="client@company.com" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+            '</div>' +
+            '<textarea id="prop-notes" placeholder="Key notes for AI to include in the proposal..." style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;resize:vertical;min-height:60px;box-sizing:border-box;margin-bottom:10px;"></textarea>' +
+            '<button id="prop-gen-btn" onclick="window.generateProposal()" style="padding:10px 20px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✦ Generate Proposal</button>' +
+          '</div>' +
+          '<div id="proposals-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;overflow-y:auto;"></div>' +
+        '</div>' +
+        '<div id="proposal-viewer" style="display:none;flex-direction:column;background:#2E2E32;border-left:1px solid rgba(255,255,255,0.07);border-radius:0 12px 12px 0;overflow:hidden;"></div>' +
       '</div>';
     }
   },
@@ -3134,33 +3518,91 @@ var PANEL_CONTENT = {
   finance: {
     title: "💰 Finance & Expenses",
     html: function() {
+      window._expenses = [
+        {id:1,desc:'AWS Infrastructure',cat:'Tech',amt:'$2,340',date:'Apr 20',status:'Approved',color:'#4ADE80'},
+        {id:2,desc:'Adobe Creative Suite',cat:'Software',amt:'$120',date:'Apr 19',status:'Approved',color:'#4ADE80'},
+        {id:3,desc:'Team Dinner — Pitch Prep',cat:'Entertainment',amt:'$640',date:'Apr 18',status:'Pending',color:'#FBBF24'},
+        {id:4,desc:'LinkedIn Ads — April',cat:'Marketing',amt:'$1,800',date:'Apr 15',status:'Approved',color:'#4ADE80'},
+        {id:5,desc:'Office Supplies',cat:'Operations',amt:'$380',date:'Apr 12',status:'Pending',color:'#FBBF24'}
+      ];
+
+      window.approveExpense = function(id, approve) {
+        var exp = window._expenses.find(function(e){ return e.id===id; });
+        if (!exp) return;
+        exp.status = approve ? 'Approved' : 'Rejected';
+        exp.color = approve ? '#4ADE80' : '#F87171';
+        var row = document.getElementById('exp-row-'+id);
+        if (!row) return;
+        var statusCell = row.querySelector('.exp-status');
+        if (statusCell) {
+          statusCell.innerHTML = '<span style="font-size:11px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+exp.color+';font-family:Syne,sans-serif;font-weight:600;">'+exp.status+'</span>';
+        }
+        // Update pending count
+        var pending = window._expenses.filter(function(e){ return e.status==='Pending'; }).length;
+        var pendingEl = document.getElementById('finance-pending-count');
+        if (pendingEl) pendingEl.textContent = pending;
+      };
+
+      window.addExpense = function() {
+        var desc = document.getElementById('new-exp-desc');
+        var cat = document.getElementById('new-exp-cat');
+        var amt = document.getElementById('new-exp-amt');
+        if (!desc || !desc.value.trim()) return;
+        var newExp = {id: Date.now(), desc: desc.value, cat: cat.value, amt: '$'+amt.value, date: 'Today', status:'Pending', color:'#FBBF24'};
+        window._expenses.unshift(newExp);
+        desc.value=''; amt.value='';
+        window.renderExpenseTable();
+      };
+
+      window.renderExpenseTable = function() {
+        var tbody = document.getElementById('expense-tbody');
+        if (!tbody) return;
+        var pending = window._expenses.filter(function(e){ return e.status==='Pending'; });
+        tbody.innerHTML = window._expenses.map(function(e){
+          var isPending = e.status === 'Pending';
+          return '<tr id="exp-row-'+e.id+'" style="border-bottom:1px solid rgba(255,255,255,0.04);" onmouseover="this.style.background=\'rgba(255,255,255,0.03)\'" onmouseout="this.style.background=\'\'">' +
+            '<td style="padding:11px 16px;font-size:13px;color:#F0EEE8;">'+e.desc+'</td>' +
+            '<td style="padding:11px 16px;font-size:12px;color:#888;">'+e.cat+'</td>' +
+            '<td style="padding:11px 16px;font-size:13px;color:#F0EEE8;font-family:Syne,sans-serif;font-weight:600;">'+e.amt+'</td>' +
+            '<td style="padding:11px 16px;font-size:12px;color:#888;">'+e.date+'</td>' +
+            '<td class="exp-status" style="padding:11px 16px;">' +
+              (isPending ?
+                '<div style="display:flex;gap:6px;align-items:center;">' +
+                  '<button onclick="window.approveExpense('+e.id+',true)" style="padding:4px 10px;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ADE80;border-radius:5px;font-family:Syne,sans-serif;font-size:10px;font-weight:600;cursor:pointer;">✓ Approve</button>' +
+                  '<button onclick="window.approveExpense('+e.id+',false)" style="padding:4px 10px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#F87171;border-radius:5px;font-family:Syne,sans-serif;font-size:10px;font-weight:600;cursor:pointer;">✕ Reject</button>' +
+                '</div>' :
+                '<span style="font-size:11px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+e.color+';font-family:Syne,sans-serif;font-weight:600;">'+e.status+'</span>') +
+            '</td>' +
+          '</tr>';
+        }).join('');
+        var countEl = document.getElementById('finance-pending-count');
+        if (countEl) countEl.textContent = window._expenses.filter(function(e){ return e.status==='Pending'; }).length;
+      };
+
+      setTimeout(function(){ window.renderExpenseTable(); }, 50);
+
       return '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">' +
-        [['$142,800','Monthly Revenue','↑ 18%','#4ADE80'],['$38,450','Total Expenses','↑ 6%','#F87171'],['$104,350','Net Profit','↑ 22%','#4ADE80'],['2','Pending Approvals','Needs review','#FBBF24']
+        [['$142,800','Monthly Revenue','↑ 18%','#4ADE80'],['$38,450','Total Expenses','↑ 6%','#F87171'],['$104,350','Net Profit','↑ 22%','#4ADE80'],['<span id="finance-pending-count">2</span>','Pending Approvals','Needs review','#FBBF24']
         ].map(function(s){ return '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;">' +
           '<div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:#F0EEE8;letter-spacing:-1px;margin-bottom:4px;">'+s[0]+'</div>' +
           '<div style="font-size:12px;color:#888;margin-bottom:6px;">'+s[1]+'</div>' +
           '<div style="font-size:11px;color:'+s[3]+';">'+s[2]+'</div>' +
         '</div>'; }).join('') +
       '</div>' +
+      // Add expense form
+      '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">' +
+        '<div style="flex:2;min-width:140px;"><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Description</label><input id="new-exp-desc" placeholder="e.g. Team lunch" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+        '<div style="flex:1;min-width:110px;"><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Category</label><select id="new-exp-cat" style="width:100%;background:#505054;border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;"><option>Tech</option><option>Software</option><option>Marketing</option><option>Entertainment</option><option>Operations</option><option>Travel</option></select></div>' +
+        '<div style="flex:1;min-width:100px;"><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Amount ($)</label><input id="new-exp-amt" type="number" placeholder="0" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+        '<button onclick="window.addExpense()" style="padding:9px 18px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add Expense</button>' +
+      '</div>' +
       '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;">' +
-        '<div style="padding:16px 18px;border-bottom:1px solid rgba(255,255,255,0.07);font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:#F0EEE8;">Recent Expenses</div>' +
+        '<div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.07);font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:#F0EEE8;">Recent Expenses</div>' +
         '<table style="width:100%;border-collapse:collapse;">' +
           '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.05);">' +
-            ['Description','Category','Amount','Date','Status'].map(function(h){ return '<th style="padding:10px 16px;text-align:left;font-family:Syne,sans-serif;font-size:10px;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;">'+h+'</th>'; }).join('') +
-          '</tr></thead><tbody>' +
-          [['AWS Infrastructure','Tech','$2,340','Apr 20','Approved','#4ADE80'],
-           ['Adobe Creative Suite','Software','$120','Apr 19','Approved','#4ADE80'],
-           ['Team Dinner — Pitch Prep','Entertainment','$640','Apr 18','Pending','#FBBF24'],
-           ['LinkedIn Ads — April','Marketing','$1,800','Apr 15','Approved','#4ADE80'],
-           ['Office Supplies','Operations','$380','Apr 12','Pending','#FBBF24']
-          ].map(function(e){ return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);" onmouseover="this.style.background=\'rgba(255,255,255,0.03)\'" onmouseout="this.style.background=\'\'">' +
-            '<td style="padding:11px 16px;font-size:13px;color:#F0EEE8;">'+e[0]+'</td>' +
-            '<td style="padding:11px 16px;font-size:12px;color:#888;">'+e[1]+'</td>' +
-            '<td style="padding:11px 16px;font-size:13px;color:#F0EEE8;font-family:Syne,sans-serif;font-weight:600;">'+e[2]+'</td>' +
-            '<td style="padding:11px 16px;font-size:12px;color:#888;">'+e[3]+'</td>' +
-            '<td style="padding:11px 16px;"><span style="font-size:11px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+e[5]+';font-family:Syne,sans-serif;font-weight:600;">'+e[4]+'</span></td>' +
-          '</tr>'; }).join('') +
-          '</tbody></table>' +
+            ['Description','Category','Amount','Date','Status / Action'].map(function(h){ return '<th style="padding:10px 16px;text-align:left;font-family:Syne,sans-serif;font-size:10px;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;">'+h+'</th>'; }).join('') +
+          '</tr></thead><tbody id="expense-tbody"></tbody>' +
+        '</table>' +
       '</div>';
     }
   },
@@ -3188,35 +3630,89 @@ var PANEL_CONTENT = {
   staff: {
     title: "👥 Staff & Tasks",
     html: function() {
-      return '<div style="display:grid;grid-template-columns:1fr 320px;gap:24px;">' +
+      window._tasks = window._tasks || [
+        {id:1,title:'Draft response to AcmeCorp partnership inquiry',assignee:'Mina',status:'In Progress',color:'#FBBF24'},
+        {id:2,title:'Prepare Q2 investor brief slides',assignee:'Mina',status:'In Progress',color:'#FBBF24'},
+        {id:3,title:'Follow up with 12 Apollo leads',assignee:'Nexora AI',status:'Done',color:'#4ADE80'},
+        {id:4,title:'Review April expense approvals',assignee:'Mina',status:'Pending',color:'#F87171'},
+        {id:5,title:'Update company handbook section 3',assignee:'Sarah R.',status:'Done',color:'#4ADE80'},
+        {id:6,title:'Schedule board meeting for May',assignee:'Nexora AI',status:'Done',color:'#4ADE80'},
+        {id:7,title:'Renew Adobe Creative Suite licence',assignee:'Mina',status:'Pending',color:'#F87171'}
+      ];
+      window._team = window._team || [
+        {initials:'MN',name:'Mina',role:'VP · TheDossGroup',color:'#F97316',online:true},
+        {initials:'SR',name:'Sarah R.',role:'Ops Manager',color:'#60A5FA',online:true},
+        {initials:'TK',name:'Tom K.',role:'Finance Lead',color:'#4ADE80',online:false},
+        {initials:'AI',name:'Nexora AI',role:'Chief of Staff',color:'#4ADE80',online:true}
+      ];
+      window.renderTasks = function() {
+        var c = document.getElementById('tasks-list'); if (!c) return;
+        c.innerHTML = window._tasks.map(function(t){
+          return '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px;">' +
+            '<div onclick="window.cycleTaskStatus('+t.id+')" style="width:10px;height:10px;border-radius:50%;background:'+t.color+';flex-shrink:0;cursor:pointer;" title="Click to cycle status"></div>' +
+            '<div style="flex:1;font-size:13px;color:#F0EEE8;">'+t.title+'</div>' +
+            '<div style="font-size:11px;color:#888;flex-shrink:0;margin-right:4px;">'+t.assignee+'</div>' +
+            '<span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+t.color+';font-family:Syne,sans-serif;font-weight:600;flex-shrink:0;">'+t.status+'</span>' +
+            '<button onclick="window._tasks=window._tasks.filter(function(x){return x.id!=='+t.id+'});window.renderTasks()" style="background:none;border:none;color:#555;cursor:pointer;font-size:14px;flex-shrink:0;padding:0 2px;">✕</button>' +
+          '</div>';
+        }).join('');
+      };
+      window.cycleTaskStatus = function(id) {
+        var t = window._tasks.find(function(x){ return x.id===id; }); if (!t) return;
+        var s = [['Pending','#F87171'],['In Progress','#FBBF24'],['Done','#4ADE80']];
+        var i = s.findIndex(function(x){ return x[0]===t.status; });
+        var n = s[(i+1)%3]; t.status=n[0]; t.color=n[1]; window.renderTasks();
+      };
+      window.addTask = function() {
+        var title = document.getElementById('new-task-title');
+        var assignee = document.getElementById('new-task-assignee');
+        if (!title||!title.value.trim()) return;
+        window._tasks.unshift({id:Date.now(),title:title.value.trim(),assignee:assignee?assignee.value:'Mina',status:'Pending',color:'#F87171'});
+        title.value=''; window.renderTasks();
+      };
+      window.addMember = function() {
+        var name=document.getElementById('new-member-name');
+        var role=document.getElementById('new-member-role');
+        if(!name||!name.value.trim())return;
+        var ini=name.value.trim().split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
+        window._team.push({initials:ini,name:name.value.trim(),role:role?role.value:'Team Member',color:'#60A5FA',online:false});
+        name.value=''; if(role)role.value=''; window.renderTeam();
+      };
+      window.renderTeam = function() {
+        var c=document.getElementById('team-list'); if(!c)return;
+        c.innerHTML=window._team.map(function(m){
+          return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+            '<div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:Syne,sans-serif;color:'+m.color+';flex-shrink:0;">'+m.initials+'</div>' +
+            '<div style="flex:1;"><div style="font-size:13px;color:#F0EEE8;">'+m.name+'</div><div style="font-size:11px;color:#888;">'+m.role+'</div></div>' +
+            '<div style="width:7px;height:7px;border-radius:50%;background:'+(m.online?'#4ADE80':'#555')+';"></div>' +
+          '</div>';
+        }).join('');
+      };
+      setTimeout(function(){window.renderTasks();window.renderTeam();},50);
+      return '<div style="display:grid;grid-template-columns:1fr 280px;gap:20px;">' +
         '<div>' +
-          '<div style="font-family:Syne,sans-serif;font-size:12px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Active Tasks</div>' +
-          '<div style="display:flex;flex-direction:column;gap:8px;">' +
-          [['Draft response to AcmeCorp partnership inquiry','Mina','In Progress','#FBBF24'],
-           ['Prepare Q2 investor brief slides','Mina','In Progress','#FBBF24'],
-           ['Follow up with 12 Apollo leads','Nexora AI','Done','#4ADE80'],
-           ['Review April expense approvals','Mina','Pending','#F87171'],
-           ['Update company handbook section 3','Sarah R.','Done','#4ADE80'],
-           ['Schedule board meeting for May','Nexora AI','Done','#4ADE80'],
-           ['Renew Adobe Creative Suite licence','Mina','Pending','#F87171']
-          ].map(function(t){ return '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px;">' +
-            '<div style="width:8px;height:8px;border-radius:50%;background:'+t[3]+';flex-shrink:0;"></div>' +
-            '<div style="flex:1;font-size:13px;color:#F0EEE8;">'+t[0]+'</div>' +
-            '<div style="font-size:11px;color:#888;flex-shrink:0;">'+t[1]+'</div>' +
-            '<span style="font-size:10px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+t[3]+';font-family:Syne,sans-serif;font-weight:600;flex-shrink:0;">'+t[2]+'</span>' +
-          '</div>'; }).join('') +
+          '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">' +
+            '<div style="flex:2;min-width:140px;"><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Task</label><input id="new-task-title" placeholder="Enter task" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;" onkeypress="if(event.key===\'Enter\')window.addTask()"/></div>' +
+            '<div style="flex:1;min-width:110px;"><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Assign to</label><select id="new-task-assignee" style="width:100%;background:#505054;border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;">' +
+              ['Mina','Sarah R.','Tom K.','Nexora AI'].map(function(n){return '<option>'+n+'</option>';}).join('') +
+            '</select></div>' +
+            '<button onclick="window.addTask()" style="padding:9px 18px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">+ Add Task</button>' +
+            '<button onclick="openAIChat()" style="padding:9px 14px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">✦ AI</button>' +
           '</div>' +
+          '<div style="font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Tasks <span style="color:#555;font-size:10px;">(tap dot to cycle status)</span></div>' +
+          '<div id="tasks-list"></div>' +
         '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:16px;">' +
-          '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;">' +
-            '<div style="font-family:Syne,sans-serif;font-size:12px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Team</div>' +
-            [['MN','Mina','VP · TheDossGroup','#F97316',true],['SR','Sarah R.','Ops Manager','#60A5FA',true],['TK','Tom K.','Finance Lead','#4ADE80',false],['AI','Nexora AI','Chief of Staff','#4ADE80',true]].map(function(m){ return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">' +
-              '<div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:Syne,sans-serif;color:'+m[3]+';flex-shrink:0;">'+m[0]+'</div>' +
-              '<div style="flex:1;"><div style="font-size:13px;color:#F0EEE8;">'+m[1]+'</div><div style="font-size:11px;color:#888;">'+m[2]+'</div></div>' +
-              '<div style="width:7px;height:7px;border-radius:50%;background:'+(m[4]?'#4ADE80':'#555')+';" title="'+(m[4]?'Online':'Offline')+'"></div>' +
-            '</div>'; }).join('') +
+        '<div style="display:flex;flex-direction:column;gap:14px;">' +
+          '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;">' +
+            '<div style="font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Team</div>' +
+            '<div id="team-list"></div>' +
           '</div>' +
-          '<button onclick="openAIChat()" style="width:100%;padding:10px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:8px;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✦ Ask AI to Assign Tasks</button>' +
+          '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;">' +
+            '<div style="font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Add Member</div>' +
+            '<input id="new-member-name" placeholder="Full name" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:8px;"/>' +
+            '<input id="new-member-role" placeholder="Role" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;"/>' +
+            '<button onclick="window.addMember()" style="width:100%;padding:9px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">+ Add Member</button>' +
+          '</div>' +
         '</div>' +
       '</div>';
     }
@@ -3908,6 +4404,43 @@ function renderEmails(emails) {
     container.appendChild(div);
   });
 }
+
+async function fetchCalendarEvents() {
+  if (!googleAccessToken) return;
+  try {
+    var now = new Date().toISOString();
+    var end = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    var resp = await fetch(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=" + now + "&timeMax=" + end + "&maxResults=5&singleEvents=true&orderBy=startTime",
+      { headers: { "Authorization": "Bearer " + googleAccessToken } }
+    );
+    var data = await resp.json();
+    if (data.items && data.items.length > 0) {
+      renderCalendarEvents(data.items);
+    }
+  } catch(err) {
+    console.error("Calendar fetch error:", err);
+  }
+}
+
+// ── CAL SYNC GOOGLE ──
+window.calSyncGoogle = async function(btn) {
+  if (window.googleAccessToken) {
+    window.fetchCalendarForMonth(window._calViewYear || new Date().getFullYear(), window._calViewMonth || new Date().getMonth());
+    if (btn) { btn.textContent = '↻ Syncing...'; setTimeout(function(){ btn.textContent = '✓ Google Calendar Synced'; }, 2000); }
+    return;
+  }
+  await connectGmail();
+};
+
+// ── LEAD SEARCH FILTER ──
+window.filterLeads = function(query) {
+  var rows = document.querySelectorAll('#leads-tbody tr');
+  rows.forEach(function(row) {
+    var text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query.toLowerCase()) ? '' : 'none';
+  });
+};
 
 async function fetchCalendarEvents() {
   if (!googleAccessToken) return;
