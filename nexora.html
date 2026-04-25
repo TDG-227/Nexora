@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">  
-<head>
+<html lang="en" style="overflow: auto; height: auto;"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nexora — Your Business, Fully Automated</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=DM+Sans:wght@300;400;500&amp;family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -12,11 +10,32 @@ html{scroll-behavior:smooth;width:100%;overflow-x:hidden;}
 body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
 #page-landing,#page-dashboard,#pg-login{display:none;}
 </style>
-</head>
-<body>
+<style id="claude-agent-animation-styles">
+      @keyframes claude-pulse {
+        0% {
+          box-shadow: 
+            inset 0 0 10px rgba(217, 119, 87, 0.5),
+            inset 0 0 20px rgba(217, 119, 87, 0.3),
+            inset 0 0 30px rgba(217, 119, 87, 0.1);
+        }
+        50% {
+          box-shadow: 
+            inset 0 0 15px rgba(217, 119, 87, 0.7),
+            inset 0 0 25px rgba(217, 119, 87, 0.5),
+            inset 0 0 35px rgba(217, 119, 87, 0.2);
+        }
+        100% {
+          box-shadow: 
+            inset 0 0 10px rgba(217, 119, 87, 0.5),
+            inset 0 0 20px rgba(217, 119, 87, 0.3),
+            inset 0 0 30px rgba(217, 119, 87, 0.1);
+        }
+      }
+    </style></head>
+<body data-new-gr-c-s-check-loaded="14.1286.0" data-gr-ext-installed="" style="overflow: auto; height: auto; width: 100%;">
 
 <!-- LOGIN PAGE -->
-<div id="pg-login">
+<div id="pg-login" style="display: none;">
 <canvas id="neural-login" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;opacity:1;"></canvas>
 <style>
 #pg-login{min-height:100vh;background:transparent;display:none;align-items:stretch;font-family:"DM Sans",sans-serif;}
@@ -85,7 +104,7 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
 
 <div class="login-left">
 <div style="position:absolute;top:20px;left:20px;z-index:10;">
-  <button onclick="goHome()" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#9B9BA4;padding:7px 14px;border-radius:8px;font-size:12px;font-family:Syne,sans-serif;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='#F0EEE8'" onmouseout="this.style.color='#9B9BA4'">&#8592; Back to Home</button>
+  <button onclick="goHome()" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#9B9BA4;padding:7px 14px;border-radius:8px;font-size:12px;font-family:Syne,sans-serif;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='#F0EEE8'" onmouseout="this.style.color='#9B9BA4'">← Back to Home</button>
 </div>
 <div class="login-box">
   <div class="login-logo" onclick="goHome()" style="cursor:pointer;" title="Back to Home"><span class="lw">NEX</span><span class="lo">ORA</span></div>
@@ -97,19 +116,19 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
     <button class="login-tab" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
   </div>
   <div id="form-signin">
-    <div class="login-field"><label>Email</label><input type="email" id="signin-email" placeholder="you@company.com"/></div>
-    <div class="login-field"><label>Password</label><div class="pwd-wrap"><input type="password" id="signin-password" placeholder="Your password"/><button class="pwd-toggle" type="button" onclick="togglePwd('signin-password',this)" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
-    <button class="login-btn" id="signin-btn" onclick="handleSignIn()">Sign In &rarr;</button>
+    <div class="login-field"><label>Email</label><input type="email" id="signin-email" placeholder="you@company.com"></div>
+    <div class="login-field"><label>Password</label><div class="pwd-wrap"><input type="password" id="signin-password" placeholder="Your password"><button class="pwd-toggle" type="button" onclick="togglePwd('signin-password',this)" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div>
+    <button class="login-btn" id="signin-btn" onclick="handleSignIn()">Sign In →</button>
   </div>
   <div id="form-signup" style="display:none;">
-    <div class="login-field"><label>Full Name</label><input type="text" id="signup-name" placeholder="Your full name"/></div>
-    <div class="login-field"><label>Company</label><input type="text" id="signup-company" placeholder="Company name"/></div>
-    <div class="login-field"><label>Your Role</label><input type="text" id="signup-role" placeholder="e.g. CEO, VP, Manager"/></div>
-    <div class="login-field"><label>Email</label><input type="email" id="signup-email" placeholder="you@company.com"/></div>
-    <div class="login-field"><label>Password</label><div class="pwd-wrap"><input type="password" id="signup-password" placeholder="Min 6 characters"/><button class="pwd-toggle" type="button" onclick="togglePwd('signup-password',this)" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
-    <button class="login-btn" id="signup-btn" onclick="handleSignUp()">Create Account &rarr;</button>
+    <div class="login-field"><label>Full Name</label><input type="text" id="signup-name" placeholder="Your full name"></div>
+    <div class="login-field"><label>Company</label><input type="text" id="signup-company" placeholder="Company name"></div>
+    <div class="login-field"><label>Your Role</label><input type="text" id="signup-role" placeholder="e.g. CEO, VP, Manager"></div>
+    <div class="login-field"><label>Email</label><input type="email" id="signup-email" placeholder="you@company.com"></div>
+    <div class="login-field"><label>Password</label><div class="pwd-wrap"><input type="password" id="signup-password" placeholder="Min 6 characters"><button class="pwd-toggle" type="button" onclick="togglePwd('signup-password',this)" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div>
+    <button class="login-btn" id="signup-btn" onclick="handleSignUp()">Create Account →</button>
   </div>
-  <div class="login-footer">By TheDossGroup &nbsp;&middot;&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d1b9b4bdbdbe91a5b9b4b5bea2a2b6a3bea4a1ffb2bebc">[email&#160;protected]</a></div>
+  <div class="login-footer">By TheDossGroup &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d1b9b4bdbdbe91a5b9b4b5bea2a2b6a3bea4a1ffb2bebc">[email&nbsp;protected]</a></div>
 </div>
 </div>
 
@@ -123,14 +142,14 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
     <span class="drop-letter dl-a" style="color:#F97316;">A</span>
   </div>
   <div class="login-slogan-wrap">
-    <p class="login-slogan" id="login-slogan"></p>
+    <p class="login-slogan" id="login-slogan">Love to see you signing up with Nexora.</p>
   </div>
 </div>
 </div>
 <!-- END LOGIN PAGE -->
 
-<div id="page-landing">
-<canvas id="neural-land" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;opacity:1;"></canvas>
+<div id="page-landing" style="display: block; height: auto; width: 100%;">
+<canvas id="neural-land" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;opacity:1;" width="929" height="883"></canvas>
 <style>
   :root {
     --black: #050507;
@@ -945,35 +964,35 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
     <div class="what-grid">
       <div>
         <ul class="what-list">
-          <li>
+          <li style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
             <div class="icon">📅</div>
             <div>
-              <strong>Calendar & Scheduling</strong>
+              <strong>Calendar &amp; Scheduling</strong>
               Manages your meetings, travel, and appointments automatically. Never double-book, never miss a deadline.
             </div>
           </li>
-          <li>
+          <li style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
             <div class="icon">📬</div>
             <div>
               <strong>Communications Hub</strong>
               Screens emails, drafts responses, handles calls, and liaises with stakeholders on your behalf.
             </div>
           </li>
-          <li>
+          <li style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
             <div class="icon">📊</div>
             <div>
-              <strong>Reports & Intelligence</strong>
+              <strong>Reports &amp; Intelligence</strong>
               Prepares reports, presentations, budgets, and tracks expenses without lifting a finger.
             </div>
           </li>
-          <li>
+          <li style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
             <div class="icon">📁</div>
             <div>
-              <strong>File & Data Management</strong>
+              <strong>File &amp; Data Management</strong>
               Organises, retrieves, and manages company files and data — cloud and local — intelligently.
             </div>
           </li>
-          <li>
+          <li style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
             <div class="icon">🎯</div>
             <div>
               <strong>Lead Generation</strong>
@@ -1009,19 +1028,19 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
 <!-- STATS -->
 <div class="stats-section" style="padding: 60px 0;">
   <div class="stats-grid">
-    <div class="stat">
+    <div class="stat" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
       <div class="stat-num">90%</div>
       <div class="stat-label">Reduction in manual admin work</div>
     </div>
-    <div class="stat">
+    <div class="stat" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
       <div class="stat-num">24/7</div>
       <div class="stat-label">Autonomous operation, zero downtime</div>
     </div>
-    <div class="stat">
+    <div class="stat" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
       <div class="stat-num">5×</div>
       <div class="stat-label">Faster lead response time</div>
     </div>
-    <div class="stat">
+    <div class="stat" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
       <div class="stat-num">$0</div>
       <div class="stat-label">Extra headcount required</div>
     </div>
@@ -1036,7 +1055,7 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
     <p class="section-sub">Six fully integrated AI modules. Each powerful alone — unstoppable together.</p>
 
     <div class="modules-grid">
-      <div class="module-card">
+      <div class="module-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="module-num">01</div>
         <span class="module-icon">🧠</span>
         <div class="module-title">Executive Assistant</div>
@@ -1048,7 +1067,7 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
         </div>
       </div>
 
-      <div class="module-card">
+      <div class="module-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="module-num">02</div>
         <span class="module-icon">📬</span>
         <div class="module-title">Communications Hub</div>
@@ -1060,7 +1079,7 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
         </div>
       </div>
 
-      <div class="module-card">
+      <div class="module-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="module-num">03</div>
         <span class="module-icon">📊</span>
         <div class="module-title">Business Intelligence</div>
@@ -1072,10 +1091,10 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
         </div>
       </div>
 
-      <div class="module-card">
+      <div class="module-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="module-num">04</div>
         <span class="module-icon">📁</span>
-        <div class="module-title">File & Data Management</div>
+        <div class="module-title">File &amp; Data Management</div>
         <div class="module-desc">Intelligently organises, retrieves, and manages company files across cloud and local storage. Your data, always at hand.</div>
         <div class="module-tags">
           <span class="tag">Google Drive</span>
@@ -1084,7 +1103,7 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
         </div>
       </div>
 
-      <div class="module-card">
+      <div class="module-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="module-num">05</div>
         <span class="module-icon">🎯</span>
         <div class="module-title">Growth Engine</div>
@@ -1096,10 +1115,10 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
         </div>
       </div>
 
-      <div class="module-card">
+      <div class="module-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="module-num">06</div>
         <span class="module-icon">🤝</span>
-        <div class="module-title">Staff & Operations</div>
+        <div class="module-title">Staff &amp; Operations</div>
         <div class="module-desc">Implements daily tasks, coordinates with staff, manages workflows, and maintains confidential operations across your entire organisation.</div>
         <div class="module-tags">
           <span class="tag">Workflows</span>
@@ -1119,22 +1138,22 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
     <p class="section-sub">No technical knowledge required. Nexora is built for leaders, not engineers.</p>
 
     <div class="steps">
-      <div class="step">
+      <div class="step" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="step-num">01</div>
         <div class="step-title">Connect your tools</div>
         <div class="step-desc">Link your Gmail, Google Calendar, phone number, and business tools in minutes. No code required.</div>
       </div>
-      <div class="step">
+      <div class="step" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="step-num">02</div>
         <div class="step-title">Train your AI</div>
         <div class="step-desc">Tell Nexora about your company, your preferences, and how you like things done. It learns your style.</div>
       </div>
-      <div class="step">
+      <div class="step" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="step-num">03</div>
         <div class="step-title">Set your rules</div>
         <div class="step-desc">Define what Nexora handles autonomously and what it escalates to you. Full control, always.</div>
       </div>
-      <div class="step">
+      <div class="step" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="step-num">04</div>
         <div class="step-title">Let Nexora work</div>
         <div class="step-desc">Your AI Chief of Staff starts operating immediately — 24 hours a day, 7 days a week, without a break.</div>
@@ -1151,13 +1170,13 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
     <p class="section-sub">Replace an entire operations team for a fraction of the cost. Cancel anytime.</p>
 
     <div class="pricing-grid">
-      <div class="price-card">
+      <div class="price-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="price-plan">Starter</div>
         <div class="price-amount"><span>$</span>1,000</div>
         <div class="price-period">per month</div>
         <ul class="price-features">
-          <li>Calendar & Scheduling AI</li>
-          <li>Email Screening & Drafting</li>
+          <li>Calendar &amp; Scheduling AI</li>
+          <li>Email Screening &amp; Drafting</li>
           <li>Basic Lead Generation</li>
           <li>Monthly Reports</li>
           <li>1 User Seat</li>
@@ -1165,29 +1184,29 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
         <a href="#" class="btn-ghost" style="width:100%;text-align:center;display:block;padding:14px;" onclick="showDashboard(event)">Get Started</a>
       </div>
 
-      <div class="price-card featured">
+      <div class="price-card featured" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="price-badge">Most Popular</div>
         <div class="price-plan">Professional</div>
         <div class="price-amount"><span>$</span>1,500</div>
         <div class="price-period">per month</div>
         <ul class="price-features">
           <li>All Starter features</li>
-          <li>Phone Handling & Call Transfer</li>
+          <li>Phone Handling &amp; Call Transfer</li>
           <li>Full Lead Gen + Follow-ups</li>
-          <li>Budget & Expense Tracking</li>
-          <li>Reports & Presentations</li>
+          <li>Budget &amp; Expense Tracking</li>
+          <li>Reports &amp; Presentations</li>
           <li>5 User Seats</li>
         </ul>
         <a href="#" class="btn-primary" style="width:100%;text-align:center;display:block;padding:14px;" onclick="showDashboard(event)">Get Started</a>
       </div>
 
-      <div class="price-card">
+      <div class="price-card" style="opacity: 1; transform: translateY(0px); transition: opacity 0.6s, transform 0.6s;">
         <div class="price-plan">Enterprise</div>
         <div class="price-amount"><span>$</span>2,500</div>
         <div class="price-period">per month</div>
         <ul class="price-features">
           <li>All Professional features</li>
-          <li>File & Data Management</li>
+          <li>File &amp; Data Management</li>
           <li>Staff Operations Module</li>
           <li>Custom AI Training</li>
           <li>Dedicated Support</li>
@@ -1220,15 +1239,11 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
         <div>
           <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Full Name *</label>
-          <input type="text" id="cf-name" placeholder="Your full name" required
-            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
-            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <input type="text" id="cf-name" placeholder="Your full name" required="" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" fdprocessedid="e1nh3r">
         </div>
         <div>
           <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Company Name *</label>
-          <input type="text" id="cf-company" placeholder="Your company" required
-            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
-            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <input type="text" id="cf-company" placeholder="Your company" required="" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" fdprocessedid="2nu4v5">
         </div>
       </div>
 
@@ -1236,24 +1251,18 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
         <div>
           <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Email Address *</label>
-          <input type="email" id="cf-email" placeholder="you@company.com" required
-            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
-            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <input type="email" id="cf-email" placeholder="you@company.com" required="" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" fdprocessedid="ae0edn">
         </div>
         <div>
           <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Phone Number</label>
-          <input type="tel" id="cf-phone" placeholder="+1 234 567 8900"
-            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;"
-            onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          <input type="tel" id="cf-phone" placeholder="+1 234 567 8900" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" fdprocessedid="cjyxpb">
         </div>
       </div>
 
       <!-- Plan selection -->
       <div style="margin-bottom:16px;">
         <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Interested In</label>
-        <select id="cf-plan"
-          style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;cursor:pointer;"
-          onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        <select id="cf-plan" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;cursor:pointer;" onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" fdprocessedid="vgv3op">
           <option value="" style="background:#1A1A1C;">Select a plan...</option>
           <option value="starter" style="background:#1A1A1C;">Starter — $1,000/month</option>
           <option value="professional" style="background:#1A1A1C;">Professional — $1,500/month</option>
@@ -1265,16 +1274,11 @@ body{font-family:"DM Sans",sans-serif;width:100%;overflow-x:hidden;}
       <!-- Message -->
       <div style="margin-bottom:24px;">
         <label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#AAAAAA;margin-bottom:8px;">Message</label>
-        <textarea id="cf-message" placeholder="Tell us about your business and what you'd like to automate..." rows="4"
-          style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;resize:vertical;"
-          onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'"></textarea>
+        <textarea id="cf-message" placeholder="Tell us about your business and what you'd like to automate..." rows="4" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px 16px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:14px;outline:none;transition:border-color .15s;box-sizing:border-box;resize:vertical;" onfocus="this.style.borderColor='rgba(249,115,22,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'"></textarea>
       </div>
 
       <!-- Submit button -->
-      <button type="submit" id="cf-submit"
-        style="width:100%;background:#F97316;color:#fff;border:none;border-radius:10px;padding:16px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(249,115,22,0.3);"
-        onmouseover="this.style.background='#EA6A00';this.style.transform='translateY(-1px)'"
-        onmouseout="this.style.background='#F97316';this.style.transform='translateY(0)'">
+      <button type="submit" id="cf-submit" style="width:100%;background:#F97316;color:#fff;border:none;border-radius:10px;padding:16px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(249,115,22,0.3);" onmouseover="this.style.background='#EA6A00';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#F97316';this.style.transform='translateY(0)'" fdprocessedid="y8j9zv">
         Send Message — Book Free Demo →
       </button>
 
@@ -1396,7 +1400,7 @@ async function submitContactForm(e) {
 </div>
 
 
-<div id="page-dashboard">
+<div id="page-dashboard" style="display: none;">
 <canvas id="neural-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;opacity:0.5;"></canvas>
 <style>
 :root {
@@ -2332,51 +2336,51 @@ body {
   <div class="sidebar-section">
     <div class="sidebar-label">Main</div>
     <div class="nav-item active" id="nav-dashboard" onclick="openPanel('dashboard')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Dashboard
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></span> Dashboard
     </div>
     <div class="nav-item" id="nav-ai-assistant" onclick="openAIChat()" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg></span> AI Assistant <span class="nav-badge" style="background:#F97316;color:#fff;font-size:9px;padding:2px 7px;border-radius:100px;font-family:Syne,sans-serif;font-weight:700;">Live</span>
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><circle cx="12" cy="17" r="0.5" fill="currentColor"></circle></svg></span> AI Assistant <span class="nav-badge" style="background:#F97316;color:#fff;font-size:9px;padding:2px 7px;border-radius:100px;font-family:Syne,sans-serif;font-weight:700;">Live</span>
     </div>
     <div class="nav-item" id="nav-inbox" onclick="openPanel('inbox')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Inbox <span class="nav-badge red">7</span>
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span> Inbox <span class="nav-badge red">7</span>
     </div>
     <div class="nav-item" id="nav-calendar" onclick="openPanel('calendar')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Calendar
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span> Calendar
     </div>
     <div class="nav-item" id="nav-phone" onclick="openPanel('phone')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span> Phone Calls <span class="nav-badge muted">3</span>
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span> Phone Calls <span class="nav-badge muted">3</span>
     </div>
   </div>
 
   <div class="sidebar-section">
     <div class="sidebar-label">Operations</div>
     <div class="nav-item" id="nav-leads" onclick="openPanel('leads')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Lead Generation
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Lead Generation
     </div>
     <div class="nav-item" id="nav-proposals" onclick="openPanel('proposals')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Proposals
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span> Proposals
     </div>
     <div class="nav-item" id="nav-reports" onclick="openPanel('reports')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Reports
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></span> Reports
     </div>
     <div class="nav-item" id="nav-finance" onclick="openPanel('finance')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> Finance & Expenses
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span> Finance &amp; Expenses
     </div>
     <div class="nav-item" id="nav-files" onclick="openPanel('files')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> File Manager
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span> File Manager
     </div>
   </div>
 
   <div class="sidebar-section">
     <div class="sidebar-label">Company</div>
     <div class="nav-item" id="nav-staff" onclick="openPanel('staff')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Staff & Tasks
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Staff &amp; Tasks
     </div>
     <div class="nav-item" id="nav-integrations" onclick="openPanel('integrations')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span> Integrations
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Integrations
     </div>
     <div class="nav-item" id="nav-settings" onclick="openPanel('settings')" style="cursor:pointer;">
-      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 7.76a6 6 0 0 0 0 8.49"/></svg></span> Settings
+      <span class="nav-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 7.76a6 6 0 0 0 0 8.49"></path></svg></span> Settings
     </div>
   </div>
 
@@ -2404,17 +2408,17 @@ body {
     <div class="topbar-right" id="topbar-avatar-area">
       <div id="topbar-avatar" class="avatar" style="width:32px;height:32px;font-size:11px;cursor:pointer;">MN</div>
       <button id="gmail-connect-btn" onclick="connectGmail()" style="display:flex;align-items:center;gap:5px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;padding:6px 12px;border-radius:6px;font-size:12px;font-family:Syne,sans-serif;cursor:pointer;font-weight:600;transition:all .15s;">📧 Connect Gmail</button>
-      <button onclick="goHome()" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#9B9BA4;padding:6px 12px;border-radius:6px;font-size:12px;font-family:Syne,sans-serif;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='#F0EEE8'" onmouseout="this.style.color='#9B9BA4'">&#8592; Home</button>
-      <button onclick="signOut()" style="display:flex;align-items:center;gap:5px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#F87171;padding:6px 12px;border-radius:6px;font-size:12px;font-family:Syne,sans-serif;font-weight:600;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='rgba(248,113,113,0.22)'" onmouseout="this.style.background='rgba(248,113,113,0.12)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+      <button onclick="goHome()" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#9B9BA4;padding:6px 12px;border-radius:6px;font-size:12px;font-family:Syne,sans-serif;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='#F0EEE8'" onmouseout="this.style.color='#9B9BA4'">← Home</button>
+      <button onclick="signOut()" style="display:flex;align-items:center;gap:5px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#F87171;padding:6px 12px;border-radius:6px;font-size:12px;font-family:Syne,sans-serif;font-weight:600;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='rgba(248,113,113,0.22)'" onmouseout="this.style.background='rgba(248,113,113,0.12)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>Sign Out</button>
       <div class="nexora-status">
         <div class="status-dot"></div>
         Nexora Active
       </div>
       <div class="icon-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
       <div class="icon-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <div class="notif-dot"></div>
       </div>
       <div class="avatar" style="width:34px;height:34px;font-size:11px;cursor:pointer;">MN</div>
@@ -2433,11 +2437,11 @@ body {
       </div>
       <div class="greeting-actions">
         <button class="btn btn-outline" onclick="openPanel('reports')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           Morning Report
         </button>
         <button class="btn btn-accent" onclick="runDailyTasks(this)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
           Run Daily Tasks
         </button>
       </div>
@@ -2446,16 +2450,16 @@ body {
     <!-- AI COMMAND BAR -->
     <div class="command-bar">
       <div class="command-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="#000"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path><circle cx="12" cy="16" r="1" fill="#000"></circle><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
       </div>
-      <input class="command-input" id="nexora-cmd-input" placeholder="Ask Nexora anything... 'Schedule a meeting with John at 3pm' or 'Draft a follow-up to the AcmeCorp lead'" />
+      <input class="command-input" id="nexora-cmd-input" placeholder="Ask Nexora anything... 'Schedule a meeting with John at 3pm' or 'Draft a follow-up to the AcmeCorp lead'">
       <span class="command-hint">⌘K</span>
     </div>
     <div id="nexora-response" style="display:none;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:10px;padding:16px 18px;margin-top:10px;font-size:13px;color:#F0EEE8;line-height:1.7;font-family:DM Sans,sans-serif;position:relative;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
         <div style="width:8px;height:8px;background:#F97316;border-radius:50%;"></div>
         <span style="font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;">Nexora AI</span>
-        <button onclick="document.getElementById('nexora-response').style.display='none'" style="margin-left:auto;background:none;border:none;color:#888;cursor:pointer;font-size:16px;">&#x2715;</button>
+        <button onclick="document.getElementById('nexora-response').style.display='none'" style="margin-left:auto;background:none;border:none;color:#888;cursor:pointer;font-size:16px;">✕</button>
       </div>
       <div id="nexora-response-text"></div>
     </div>
@@ -2465,7 +2469,7 @@ body {
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-icon" style="background:var(--green-dim);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           </div>
           <span class="stat-change up">↑ 24%</span>
         </div>
@@ -2476,7 +2480,7 @@ body {
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-icon" style="background:var(--blue-dim);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           </div>
           <span class="stat-change up">↑ 12%</span>
         </div>
@@ -2487,7 +2491,7 @@ body {
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-icon" style="background:var(--amber-dim);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
           </div>
           <span class="stat-change up">↑ 8%</span>
         </div>
@@ -2498,7 +2502,7 @@ body {
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-icon" style="background:var(--accent2);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </div>
           <span class="stat-change up">↑ 31%</span>
         </div>
@@ -2829,7 +2833,7 @@ body {
         <div style="padding:0;">
           <div class="phone-item">
             <div class="call-icon call-in">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 2 16 8 22 8"/><line x1="22" y1="2" x2="16" y2="8"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 2 16 8 22 8"></polyline><line x1="22" y1="2" x2="16" y2="8"></line><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </div>
             <div class="call-info">
               <div class="call-name">Velocity Inc. — James</div>
@@ -2839,7 +2843,7 @@ body {
           </div>
           <div class="phone-item">
             <div class="call-icon call-out">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 2 8 8 2 8"/><line x1="2" y1="2" x2="8" y2="8"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 2 8 8 2 8"></polyline><line x1="2" y1="2" x2="8" y2="8"></line><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </div>
             <div class="call-info">
               <div class="call-name">AcmeCorp — Sarah K.</div>
@@ -2849,7 +2853,7 @@ body {
           </div>
           <div class="phone-item">
             <div class="call-icon call-missed">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </div>
             <div class="call-info">
               <div class="call-name">Unknown Number</div>
@@ -2859,7 +2863,7 @@ body {
           </div>
           <div class="phone-item">
             <div class="call-icon call-in">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 2 16 8 22 8"/><line x1="22" y1="2" x2="16" y2="8"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 2 16 8 22 8"></polyline><line x1="22" y1="2" x2="16" y2="8"></line><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </div>
             <div class="call-info">
               <div class="call-name">ClearPath — Omar</div>
@@ -2869,7 +2873,7 @@ body {
           </div>
           <div class="phone-item">
             <div class="call-icon call-out">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 2 8 8 2 8"/><line x1="2" y1="2" x2="8" y2="8"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 2 8 8 2 8"></polyline><line x1="2" y1="2" x2="8" y2="8"></line><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </div>
             <div class="call-info">
               <div class="call-name">Lead #47 — Techflow</div>
@@ -2892,7 +2896,7 @@ body {
     <div style="width:28px;height:28px;background:linear-gradient(135deg,#F97316,#EA580C);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;">📧</div>
     <span style="font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#F0EEE8;flex:1;">Inbox</span>
     <button onclick="fetchEmails()" style="background:none;border:1px solid rgba(249,115,22,0.3);color:#F97316;padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-family:Syne,sans-serif;">↻ Refresh</button>
-    <button onclick="closeAllPanels()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;">&#x2715;</button>
+    <button onclick="closeAllPanels()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;">✕</button>
   </div>
   <div id="email-list" style="flex:1;overflow-y:auto;">
     <div style="padding:40px 20px;text-align:center;color:#555;font-size:13px;">
@@ -2906,18 +2910,18 @@ body {
 <!-- AI ASSISTANT CHAT PANEL -->
 <div id="ai-chat-panel" style="display:none;position:fixed;right:0;top:0;bottom:0;width:380px;background:#2C2C2F;border-left:1px solid rgba(255,255,255,0.1);z-index:500;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.4);">
   <div style="padding:16px 18px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;background:#242426;">
-    <div style="width:28px;height:28px;background:linear-gradient(135deg,#F97316,#EA580C);border-radius:7px;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <div style="width:28px;height:28px;background:linear-gradient(135deg,#F97316,#EA580C);border-radius:7px;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
     <span style="font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#F0EEE8;flex:1;">Nexora AI</span>
     <div style="width:7px;height:7px;background:#4ADE80;border-radius:50%;"></div>
     <span style="font-size:11px;color:#4ADE80;font-family:Syne,sans-serif;margin-right:6px;">Live</span>
-    <button onclick="closeAllPanels()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;">&#x2715;</button>
+    <button onclick="closeAllPanels()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;">✕</button>
   </div>
   <div id="ai-chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
-    <div id="ai-chat-greeting" style="max-width:85%;padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.6;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.09);color:#D0CEC8;align-self:flex-start;border-bottom-left-radius:3px;">Hi! I&#39;m Nexora, your AI Chief of Staff. How can I help you today?</div>
+    <div id="ai-chat-greeting" style="max-width:85%;padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.6;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.09);color:#D0CEC8;align-self:flex-start;border-bottom-left-radius:3px;">Hi! I'm Nexora, your AI Chief of Staff. How can I help you today?</div>
   </div>
   <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px;align-items:center;background:#242426;">
-    <input id="ai-chat-input" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:10px 14px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;" placeholder="Ask me anything..."/>
-    <button onclick="sendAIMessage()" style="width:36px;height:36px;background:#F97316;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    <input id="ai-chat-input" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:10px 14px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;" placeholder="Ask me anything...">
+    <button onclick="sendAIMessage()" style="width:36px;height:36px;background:#F97316;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
   </div>
 </div>
 
@@ -4000,7 +4004,7 @@ function runDailyTasks(btn) {
 <!-- DOWNLOAD MODAL -->
 <div id="dlModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:2000;display:none;align-items:center;justify-content:center;">
   <div style="background:#454549;border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:28px;width:340px;position:relative;">
-    <button onclick="closeDL()" style="position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:5px;background:#505054;border:1px solid rgba(255,255,255,0.12);color:#aaa;cursor:pointer;font-size:13px;">&#x2715;</button>
+    <button onclick="closeDL()" style="position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:5px;background:#505054;border:1px solid rgba(255,255,255,0.12);color:#aaa;cursor:pointer;font-size:13px;">✕</button>
     <h3 id="dlTitle" style="font-family:Syne,sans-serif;font-size:15px;font-weight:700;color:#F0EEE8;margin-bottom:6px;">Export Data</h3>
     <p id="dlDesc" style="font-size:12px;color:#AAAAAA;margin-bottom:18px;">Choose a format.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;">
@@ -4835,5 +4839,6 @@ function renderCalendarEvents(events) {
 }
 
 </script>
-</body>
-</html>
+
+
+<span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span><div id="claude-agent-glow-border" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483646; opacity: 0; transition: opacity 0.3s ease-in-out; animation: 2s ease-in-out 0s infinite normal none running claude-pulse; box-shadow: rgba(217, 119, 87, 0.5) 0px 0px 10px inset, rgba(217, 119, 87, 0.3) 0px 0px 20px inset, rgba(217, 119, 87, 0.1) 0px 0px 30px inset;"></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
