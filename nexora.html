@@ -3813,31 +3813,33 @@ var PANEL_CONTENT = {
       };
 
       var tabKeys = Object.keys(tabs);
+
+      // Register tab render functions globally so onclick can call them
+      window._nexoraSettingsTabs = tabs;
+      window._nexoraSettingsTabKeys = tabKeys;
+      window.switchSettingsTab = function(i) {
+        var key = window._nexoraSettingsTabKeys[i];
+        var content = window._nexoraSettingsTabs[key];
+        var el = document.getElementById('settings-content');
+        if (el) el.innerHTML = typeof content === 'function' ? content() : content;
+        window._nexoraSettingsTabKeys.forEach(function(_, j) {
+          var tab = document.getElementById('stab-' + j);
+          if (!tab) return;
+          tab.style.color = j === i ? '#F97316' : '#AAAAAA';
+          tab.style.background = j === i ? 'rgba(249,115,22,0.1)' : 'transparent';
+        });
+      };
+
       return '<div style="display:grid;grid-template-columns:200px 1fr;gap:24px;" id="settings-wrap">' +
         '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;height:fit-content;">' +
-          tabKeys.map(function(s,i){
-            return '<div id="stab-'+i+'" onclick="switchSettingsTab('+i+')" style="padding:10px 12px;border-radius:7px;font-size:13px;cursor:pointer;color:'+(i===0?'#F97316':'#AAAAAA')+';background:'+(i===0?'rgba(249,115,22,0.1)':'transparent')+';font-family:DM Sans,sans-serif;transition:all .15s;">'+s+'</div>';
+          tabKeys.map(function(s, i) {
+            return '<div id="stab-' + i + '" onclick="window.switchSettingsTab(' + i + ')" style="padding:10px 12px;border-radius:7px;font-size:13px;cursor:pointer;color:' + (i === 0 ? '#F97316' : '#AAAAAA') + ';background:' + (i === 0 ? 'rgba(249,115,22,0.1)' : 'transparent') + ';font-family:DM Sans,sans-serif;transition:all .15s;" onmouseover="if(this.style.color!==\'rgb(249, 115, 22)\')this.style.background=\'rgba(255,255,255,0.04)\'" onmouseout="if(this.style.color!==\'rgb(249, 115, 22)\')this.style.background=\'transparent\'">' + s + '</div>';
           }).join('') +
         '</div>' +
-        '<div id="settings-content" style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:24px;">' +
-          tabs[tabKeys[0]] +
+        '<div id="settings-content" style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:24px;overflow-y:auto;">' +
+          (typeof tabs[tabKeys[0]] === 'function' ? tabs[tabKeys[0]]() : tabs[tabKeys[0]]) +
         '</div>' +
-      '</div>' +
-      '<script>' +
-        'window._settingsTabs=' + JSON.stringify(tabs) + ';' +
-        'window._settingsTabKeys=' + JSON.stringify(tabKeys) + ';' +
-        'window.switchSettingsTab=function(i){' +
-          'var keys=window._settingsTabKeys;' +
-          'var tabs=window._settingsTabs;' +
-          'document.getElementById("settings-content").innerHTML=tabs[keys[i]];' +
-          'keys.forEach(function(_,j){' +
-            'var el=document.getElementById("stab-"+j);' +
-            'if(!el)return;' +
-            'el.style.color=j===i?"#F97316":"#AAAAAA";' +
-            'el.style.background=j===i?"rgba(249,115,22,0.1)":"transparent";' +
-          '});' +
-        '};' +
-      '<\/script>';
+      '</div>';
     }
   }
 };
@@ -3927,7 +3929,8 @@ function runDailyTasks(btn) {
 </div>
 
 <script>
-var SUPABASE_URL=window.NEXORA_SUPABASE_URL||"https://pfbcbrpimvezxyqguuaa.supabase.co";
+var SUPABASE_URL=window.NEXORA_SUPABASE_URL||"https://pfbcbrpimvezxyqguuaa.supabase.co"; 
+window.APOLLO_API_KEY = 'your_key_here';
 var SUPABASE_ANON=window.NEXORA_SUPABASE_ANON||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmYmNicnBpbXZlenh5cWd1dWFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5ODEzNjUsImV4cCI6MjA5MDU1NzM2NX0.AjDQy50W8AVRD-14V5plGRLwrgtm5zwZMX7lGFm3Jgs";
 var CLAUDE_API_KEY=window.NEXORA_CLAUDE_KEY||"";
 var sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
@@ -3973,7 +3976,149 @@ async function handleSignUp(){
   showSuccess("Account created! Signing you in...");
   setTimeout(function(){loadUserAndEnter(r.data.user);},1200);
 }
+// ── OWNER EMAILS (always full access, no trial) ──
+var OWNER_EMAILS = ['minaalisultanpur@gmail.com', 'mandip@thedossgroup.com', 'mina@thedossgroup.com'];
+
+// ── TRIAL & SUBSCRIPTION SYSTEM ──
+var TRIAL_DAYS = 7;
+
+function isOwner(email) {
+  return OWNER_EMAILS.some(function(o) { return o.toLowerCase() === (email || '').toLowerCase(); });
+}
+
+function getTrialInfo(user) {
+  var email = user.email;
+  if (isOwner(email)) return { active: true, owner: true, daysLeft: 999, expired: false };
+
+  // Use Supabase created_at OR localStorage as fallback
+  var createdAt;
+  var storageKey = 'nexora_trial_start_' + email;
+  var stored = localStorage.getItem(storageKey);
+
+  if (stored) {
+    createdAt = new Date(stored);
+  } else if (user.created_at) {
+    createdAt = new Date(user.created_at);
+    localStorage.setItem(storageKey, createdAt.toISOString());
+  } else {
+    createdAt = new Date();
+    localStorage.setItem(storageKey, createdAt.toISOString());
+  }
+
+  var now = new Date();
+  var diffMs = now - createdAt;
+  var diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  var daysLeft = Math.max(0, TRIAL_DAYS - diffDays);
+  var expired = diffDays >= TRIAL_DAYS;
+
+  // Check if user has subscribed (stored locally until Supabase billing is set up)
+  var subscribed = localStorage.getItem('nexora_subscribed_' + email) === 'true';
+  if (subscribed) return { active: true, owner: false, daysLeft: 999, expired: false, subscribed: true };
+
+  return { active: !expired, owner: false, daysLeft: daysLeft, expired: expired, subscribed: false };
+}
+
+function showTrialBanner(daysLeft) {
+  var existing = document.getElementById('trial-banner');
+  if (existing) existing.remove();
+  if (daysLeft > 3) return; // Only show banner when <= 3 days left
+  var banner = document.createElement('div');
+  banner.id = 'trial-banner';
+  banner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(249,115,22,0.95),rgba(234,106,0,0.95));color:#000;padding:12px 24px;border-radius:10px;z-index:9000;font-family:Syne,sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;gap:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);';
+  banner.innerHTML = '⏳ ' + daysLeft + ' day' + (daysLeft === 1 ? '' : 's') + ' left in your free trial' +
+    '<button onclick="showSubscriptionModal()" style="background:#000;color:#F97316;border:none;padding:6px 14px;border-radius:6px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Upgrade Now</button>' +
+    '<button onclick="this.parentNode.remove()" style="background:none;border:none;color:rgba(0,0,0,0.6);cursor:pointer;font-size:16px;padding:0;">✕</button>';
+  document.body.appendChild(banner);
+}
+
+function showSubscriptionModal() {
+  var existing = document.getElementById('subscription-modal');
+  if (existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.id = 'subscription-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);';
+  modal.innerHTML =
+    '<div style="background:#2C2C2F;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:48px 40px;width:100%;max-width:560px;position:relative;box-shadow:0 32px 80px rgba(0,0,0,0.6);">' +
+      // Lock icon + header
+      '<div style="text-align:center;margin-bottom:32px;">' +
+        '<div style="font-size:48px;margin-bottom:16px;">🔒</div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:#F0EEE8;letter-spacing:-0.5px;margin-bottom:10px;">Your trial has ended</div>' +
+        '<div style="font-size:14px;color:#888;line-height:1.7;max-width:380px;margin:0 auto;">Your 7-day free trial is complete. Subscribe to keep access to all your leads, emails, calendar, reports, and AI features.</div>' +
+      '</div>' +
+      // Plans
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;">' +
+        [['Starter','$1,000','1 user · Core modules','starter'],
+         ['Professional','$1,500','5 users · Full suite','professional'],
+         ['Enterprise','$2,500','Unlimited · Everything','enterprise']
+        ].map(function(p, i) {
+          var featured = i === 1;
+          return '<div onclick="window._selectedPlan=\'' + p[3] + '\';document.querySelectorAll(\'.plan-card\').forEach(function(c){c.style.borderColor=\'rgba(255,255,255,0.1)\'});this.style.borderColor=\'#F97316\';" class="plan-card" style="background:' + (featured ? 'rgba(249,115,22,0.08)' : 'rgba(255,255,255,0.04)') + ';border:2px solid ' + (featured ? 'rgba(249,115,22,0.4)' : 'rgba(255,255,255,0.1)') + ';border-radius:12px;padding:18px;cursor:pointer;text-align:center;transition:border-color .2s;">' +
+            (featured ? '<div style="font-size:10px;font-family:Syne,sans-serif;font-weight:700;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Most Popular</div>' : '<div style="height:22px;"></div>') +
+            '<div style="font-family:Syne,sans-serif;font-size:13px;font-weight:600;color:#AAAAAA;margin-bottom:6px;">' + p[0] + '</div>' +
+            '<div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:#F0EEE8;letter-spacing:-1px;margin-bottom:6px;">' + p[1] + '<span style="font-size:12px;font-weight:400;color:#888;">/mo</span></div>' +
+            '<div style="font-size:11px;color:#666;">' + p[2] + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+      // CTA
+      '<button onclick="window.handleSubscribe()" style="width:100%;padding:15px;background:#F97316;border:none;color:#000;border-radius:10px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;transition:background .15s;" onmouseover="this.style.background=\'#EA6A00\'" onmouseout="this.style.background=\'#F97316\'">Subscribe & Unlock Nexora →</button>' +
+      '<div style="text-align:center;font-size:12px;color:#555;">Contact us at <a href="mailto:nexora.thedossgroup@gmail.com" style="color:#F97316;text-decoration:none;">nexora.thedossgroup@gmail.com</a> for enterprise billing</div>' +
+    '</div>';
+  document.body.appendChild(modal);
+  window._selectedPlan = 'professional';
+}
+
+function freezeDashboard(userEmail) {
+  // Blur/disable all content panels
+  var content = document.querySelector('.content');
+  if (content) {
+    content.style.filter = 'blur(4px)';
+    content.style.pointerEvents = 'none';
+    content.style.userSelect = 'none';
+  }
+  var sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    sidebar.style.filter = 'blur(2px)';
+    sidebar.style.pointerEvents = 'none';
+  }
+  showSubscriptionModal();
+}
+
+window.handleSubscribe = function() {
+  // In production this would go to Stripe/payment processor
+  // For now, mark as subscribed locally and unlock
+  var user = window._currentUser;
+  if (!user) return;
+
+  var btn = event.target;
+  btn.textContent = 'Processing...';
+  btn.disabled = true;
+
+  setTimeout(function() {
+    localStorage.setItem('nexora_subscribed_' + user.email, 'true');
+    // Remove modal and unfreeze
+    var modal = document.getElementById('subscription-modal');
+    if (modal) modal.remove();
+    var banner = document.getElementById('trial-banner');
+    if (banner) banner.remove();
+
+    var content = document.querySelector('.content');
+    if (content) { content.style.filter = ''; content.style.pointerEvents = ''; content.style.userSelect = ''; }
+    var sidebar = document.querySelector('.sidebar');
+    if (sidebar) { sidebar.style.filter = ''; sidebar.style.pointerEvents = ''; }
+
+    // Show success toast
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#4ADE80;color:#000;padding:12px 24px;border-radius:10px;z-index:9999;font-family:Syne,sans-serif;font-size:13px;font-weight:700;box-shadow:0 8px 32px rgba(0,0,0,0.4);';
+    toast.textContent = '✓ Subscribed! Welcome to Nexora ' + (window._selectedPlan || 'Professional') + ' 🎉';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 4000);
+  }, 1500);
+};
+
 function loadUserAndEnter(user){
+  window._currentUser = user;
   var meta=user.user_metadata||{};
   var fullName=meta.full_name||user.email.split("@")[0];
   var userRole=meta.role||"User";
@@ -3997,6 +4142,33 @@ function loadUserAndEnter(user){
   document.body.style.overflow="hidden";document.documentElement.style.overflow="hidden";
   if(window.stopLoginNeural)stopLoginNeural();
   if(window.startNeural)setTimeout(startNeural,50);
+
+  // ── TRIAL CHECK (runs after dashboard is shown) ──
+  setTimeout(function() {
+    var trial = getTrialInfo(user);
+    if (trial.owner || trial.subscribed) {
+      // Full access — show owner badge
+      if (trial.owner) {
+        var badge = document.createElement('div');
+        badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.3);color:#F97316;padding:5px 12px;border-radius:100px;font-family:Syne,sans-serif;font-size:11px;font-weight:600;z-index:500;';
+        badge.textContent = '✓ Owner Access';
+        document.body.appendChild(badge);
+      }
+      return;
+    }
+    if (trial.expired) {
+      freezeDashboard(user.email);
+    } else {
+      showTrialBanner(trial.daysLeft);
+      // Show trial info in topbar
+      var trialEl = document.createElement('div');
+      trialEl.style.cssText = 'padding:4px 10px;background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.25);color:#FBBF24;border-radius:100px;font-family:Syne,sans-serif;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;';
+      trialEl.textContent = '⏳ Trial: ' + trial.daysLeft + 'd left';
+      trialEl.onclick = function() { showSubscriptionModal(); };
+      var topbarRight = document.getElementById('topbar-avatar-area');
+      if (topbarRight) topbarRight.insertBefore(trialEl, topbarRight.firstChild);
+    }
+  }, 300);
 }
 async function signOut(){
   await sb.auth.signOut();
