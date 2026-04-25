@@ -3765,9 +3765,10 @@ var PANEL_CONTENT = {
 
         // Test the key with a real Apollo API call
         try {
-          var resp = await fetch('https://api.apollo.io/v1/auth/health', {
-            method: 'GET',
-            headers: { 'Cache-Control': 'no-cache', 'X-Api-Key': key, 'Content-Type': 'application/json' }
+          var resp = await fetch('/api/apollo/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ api_key: key, page: 1, per_page: 1, person_titles: ['CEO'] })
           });
           // Apollo returns 200 for valid keys
           window.APOLLO_API_KEY = key;
@@ -4749,7 +4750,7 @@ window.runApolloSearch = async function() {
   results.innerHTML = '<div style="text-align:center;padding:20px;color:#888;font-size:13px;">Searching Apollo...</div>';
   try {
     var body = { api_key: window.APOLLO_API_KEY, page: 1, per_page: 10, person_titles: title ? [title] : [], person_locations: location ? [location] : [], q_keywords: industry || '' };
-    var resp = await fetch('https://api.apollo.io/v1/mixed_people/search', { method:'POST', headers:{'Content-Type':'application/json','Cache-Control':'no-cache'}, body: JSON.stringify(body) });
+    var resp = await fetch('/api/apollo/search', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
     var data = await resp.json();
     if (data.people && data.people.length > 0) {
       var colors = ['#4ADE80','#FBBF24','#60A5FA','#F97316','#A78BFA'];
@@ -4771,7 +4772,7 @@ window.runApolloSearch = async function() {
       results.innerHTML = '<div style="text-align:center;padding:20px;color:#888;font-size:13px;">'+(data.error||'No results. Try different terms.')+'</div>';
     }
   } catch(e) {
-    results.innerHTML = '<div style="padding:16px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;font-size:12px;color:#F87171;">Apollo API error — this may be a CORS restriction in the browser.<br><br><span style="color:#888;">Your key is saved. Apollo searches work best when accessed through a backend proxy. The key is ready for server-side use.</span></div>';
+    results.innerHTML = '<div style="padding:16px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;font-size:12px;color:#F87171;">Search error: ' + e.message + '<br><br><span style="color:#888;">Make sure your server.js is deployed on Railway alongside nexora.html.</span></div>';
   }
   btn.textContent = '🔍 Search Again'; btn.disabled = false;
 };
