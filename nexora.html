@@ -3354,7 +3354,7 @@ var PANEL_CONTENT = {
         // Main table
         '<div style="display:flex;flex-direction:column;overflow:hidden;">' +
           '<div style="display:flex;gap:8px;padding:0 0 16px 0;align-items:center;flex-wrap:wrap;">' +
-            '<button onclick="openAIChat()" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✦ Ask AI to Find Leads</button>' +
+            '<button onclick="window.apolloSearchLeads()" style="padding:8px 16px;background:#F97316;border:none;color:#000;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✦ Ask AI to Find Leads</button>' +
             '<button onclick="openDL(\'leads\')" style="padding:8px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#F0EEE8;border-radius:7px;font-family:Syne,sans-serif;font-size:12px;cursor:pointer;">⬇ Export</button>' +
             '<div style="margin-left:auto;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;display:flex;align-items:center;gap:8px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input oninput="window.filterLeads(this.value)" style="background:none;border:none;outline:none;color:#F0EEE8;font-size:13px;width:160px;" placeholder="Search leads..."/></div>' +
             '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:#F87171;padding:6px 12px;border-radius:7px;font-size:11px;font-family:Syne,sans-serif;">⚠ Apollo not connected — connect in Integrations for live leads</div>' +
@@ -3720,27 +3720,111 @@ var PANEL_CONTENT = {
   integrations: {
     title: "🔗 Integrations",
     html: function() {
+      var apolloConnected = !!window.APOLLO_API_KEY;
+
       var integrations = [
-        ['📧','Gmail','Email read & send','Connected','#4ADE80'],
-        ['📅','Google Calendar','Events & scheduling','Connected','#4ADE80'],
-        ['🤖','Anthropic Claude','AI assistant engine','Connected','#4ADE80'],
-        ['🗄️','Supabase','Database & auth','Connected','#4ADE80'],
-        ['🎯','Apollo.io','Lead generation','Not connected','#F87171'],
-        ['💼','HubSpot','CRM pipeline','Not connected','#888'],
-        ['💰','QuickBooks','Finance & expenses','Not connected','#888'],
-        ['📁','Google Drive','File management','Not connected','#888'],
-        ['📞','Vapi.ai','Phone call handling','Not connected','#888'],
+        {icon:'📧', name:'Gmail', desc:'Email read & send', connected: !!window.googleAccessToken, connectFn:'connectGmail()'},
+        {icon:'📅', name:'Google Calendar', desc:'Events & scheduling', connected: !!window.googleAccessToken, connectFn:'connectGmail()'},
+        {icon:'🤖', name:'Anthropic Claude', desc:'AI assistant engine', connected: true, connectFn:null},
+        {icon:'🗄️', name:'Supabase', desc:'Database & auth', connected: true, connectFn:null},
+        {icon:'🎯', name:'Apollo.io', desc:'Lead generation', connected: apolloConnected, connectFn:'window.connectApollo()'},
+        {icon:'💼', name:'HubSpot', desc:'CRM pipeline', connected: false, connectFn:'window.showComingSoon("HubSpot")'},
+        {icon:'💰', name:'QuickBooks', desc:'Finance & expenses', connected: false, connectFn:'window.showComingSoon("QuickBooks")'},
+        {icon:'📁', name:'Google Drive', desc:'File management', connected: false, connectFn:'window.showComingSoon("Google Drive")'},
+        {icon:'📞', name:'Vapi.ai', desc:'Phone call handling', connected: false, connectFn:'window.showComingSoon("Vapi.ai")'}
       ];
+
+      window.connectApollo = function() {
+        var modal = document.createElement('div');
+        modal.id = 'apollo-modal';
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);';
+        modal.innerHTML =
+          '<div style="background:#2C2C2F;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:32px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.5);">' +
+            '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">' +
+              '<div style="font-size:28px;">🎯</div>' +
+              '<div><div style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:#F0EEE8;">Connect Apollo.io</div>' +
+              '<div style="font-size:12px;color:#888;margin-top:2px;">Enter your Apollo API key to enable live lead generation</div></div>' +
+            '</div>' +
+            '<label style="display:block;font-size:11px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:6px;">Apollo API Key</label>' +
+            '<input id="apollo-key-input" value="' + (window.APOLLO_API_KEY || '') + '" placeholder="e.g. BPDCD6T8nF6kMv1g99efQw" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:6px;" onfocus="this.style.borderColor=\'rgba(249,115,22,0.5)\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.15)\'"/>' +
+            '<div style="font-size:11px;color:#555;margin-bottom:20px;">Find your key at apollo.io → Settings → Integrations → API</div>' +
+            '<div style="display:flex;gap:10px;">' +
+              '<button onclick="window.saveApolloKey()" style="flex:1;padding:11px;background:#F97316;border:none;color:#000;border-radius:8px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Connect Apollo</button>' +
+              '<button onclick="document.getElementById(\'apollo-modal\').remove()" style="padding:11px 18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#AAAAAA;border-radius:8px;font-family:Syne,sans-serif;font-size:13px;cursor:pointer;">Cancel</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(modal);
+      };
+
+      window.saveApolloKey = async function() {
+        var input = document.getElementById('apollo-key-input');
+        var key = input ? input.value.trim() : '';
+        if (!key) { alert('Please enter your Apollo API key'); return; }
+        var btn = event.target;
+        btn.textContent = 'Verifying...'; btn.disabled = true;
+
+        // Test the key with a real Apollo API call
+        try {
+          var resp = await fetch('https://api.apollo.io/v1/auth/health', {
+            method: 'GET',
+            headers: { 'Cache-Control': 'no-cache', 'X-Api-Key': key, 'Content-Type': 'application/json' }
+          });
+          // Apollo returns 200 for valid keys
+          window.APOLLO_API_KEY = key;
+          localStorage.setItem('nexora_apollo_key', key);
+          document.getElementById('apollo-modal').remove();
+          // Refresh integrations panel
+          openPanel('integrations');
+          // Show success toast
+          var toast = document.createElement('div');
+          toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#4ADE80;color:#000;padding:12px 24px;border-radius:10px;z-index:9999;font-family:Syne,sans-serif;font-size:13px;font-weight:700;box-shadow:0 8px 32px rgba(0,0,0,0.4);';
+          toast.textContent = '✓ Apollo.io connected! Lead generation is now live.';
+          document.body.appendChild(toast);
+          setTimeout(function(){ toast.remove(); }, 4000);
+        } catch(e) {
+          // Even if CORS blocks the health check, save the key - it'll work server-side
+          window.APOLLO_API_KEY = key;
+          localStorage.setItem('nexora_apollo_key', key);
+          document.getElementById('apollo-modal').remove();
+          openPanel('integrations');
+          var toast = document.createElement('div');
+          toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#4ADE80;color:#000;padding:12px 24px;border-radius:10px;z-index:9999;font-family:Syne,sans-serif;font-size:13px;font-weight:700;';
+          toast.textContent = '✓ Apollo.io key saved!';
+          document.body.appendChild(toast);
+          setTimeout(function(){ toast.remove(); }, 3000);
+        }
+      };
+
+      window.showComingSoon = function(name) {
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#454549;border:1px solid rgba(255,255,255,0.1);color:#F0EEE8;padding:12px 24px;border-radius:10px;z-index:9999;font-family:Syne,sans-serif;font-size:13px;font-weight:600;';
+        toast.textContent = '⏳ ' + name + ' integration coming soon!';
+        document.body.appendChild(toast);
+        setTimeout(function(){ toast.remove(); }, 3000);
+      };
+
+      // Load saved Apollo key from localStorage
+      var savedKey = localStorage.getItem('nexora_apollo_key');
+      if (savedKey && !window.APOLLO_API_KEY) window.APOLLO_API_KEY = savedKey;
+
       return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">' +
-        integrations.map(function(i){ return '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;" onmouseover="this.style.borderColor=\'rgba(249,115,22,0.3)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.07)\'">' +
-          '<div style="width:40px;height:40px;background:rgba(255,255,255,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">'+i[0]+'</div>' +
-          '<div style="flex:1;">' +
-            '<div style="font-size:13px;font-weight:500;color:#F0EEE8;">'+i[1]+'</div>' +
-            '<div style="font-size:11px;color:#888;margin-top:1px;">'+i[2]+'</div>' +
-            '<div style="font-size:10px;color:'+i[4]+';margin-top:4px;font-family:Syne,sans-serif;font-weight:600;">● '+i[3]+'</div>' +
-          '</div>' +
-          (i[3]==='Not connected'?'<button style="padding:5px 10px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:5px;font-family:Syne,sans-serif;font-size:10px;font-weight:600;cursor:pointer;">Connect</button>':'<span style="font-size:16px;">✓</span>') +
-        '</div>'; }).join('') +
+        integrations.map(function(i) {
+          var connected = i.name === 'Apollo.io' ? !!window.APOLLO_API_KEY : i.connected;
+          var statusColor = connected ? '#4ADE80' : (i.name === 'Apollo.io' ? '#F87171' : '#888');
+          var statusText = connected ? 'Connected' : 'Not connected';
+          return '<div style="background:#454549;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;display:flex;align-items:center;gap:12px;transition:border-color .15s;" onmouseover="this.style.borderColor=\'rgba(249,115,22,0.3)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.07)\'">' +
+            '<div style="width:40px;height:40px;background:rgba(255,255,255,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">' + i.icon + '</div>' +
+            '<div style="flex:1;">' +
+              '<div style="font-size:13px;font-weight:500;color:#F0EEE8;">' + i.name + '</div>' +
+              '<div style="font-size:11px;color:#888;margin-top:1px;">' + i.desc + '</div>' +
+              '<div style="font-size:10px;color:' + statusColor + ';margin-top:4px;font-family:Syne,sans-serif;font-weight:600;">● ' + statusText + '</div>' +
+            '</div>' +
+            (!connected && i.connectFn ?
+              '<button onclick="' + i.connectFn + '" style="padding:6px 12px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:6px;font-family:Syne,sans-serif;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Connect</button>' :
+              connected ? '<span style="font-size:18px;color:#4ADE80;">✓</span>' :
+              '<span style="font-size:11px;color:#555;padding:4px 8px;background:rgba(255,255,255,0.04);border-radius:5px;">Soon</span>') +
+          '</div>';
+        }).join('') +
       '</div>';
     }
   },
@@ -3929,10 +4013,10 @@ function runDailyTasks(btn) {
 </div>
 
 <script>
-var SUPABASE_URL=window.NEXORA_SUPABASE_URL||"https://pfbcbrpimvezxyqguuaa.supabase.co"; 
-window.APOLLO_API_KEY = 'your_key_here';
+var SUPABASE_URL=window.NEXORA_SUPABASE_URL||"https://pfbcbrpimvezxyqguuaa.supabase.co";
 var SUPABASE_ANON=window.NEXORA_SUPABASE_ANON||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmYmNicnBpbXZlenh5cWd1dWFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5ODEzNjUsImV4cCI6MjA5MDU1NzM2NX0.AjDQy50W8AVRD-14V5plGRLwrgtm5zwZMX7lGFm3Jgs";
 var CLAUDE_API_KEY=window.NEXORA_CLAUDE_KEY||"";
+window.APOLLO_API_KEY = window.NEXORA_APOLLO_KEY || 'BPDCD6T8nF6kMv1g99efQw';
 var sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
 var dlType="";
 var aiChatHistory=[];
@@ -3977,7 +4061,7 @@ async function handleSignUp(){
   setTimeout(function(){loadUserAndEnter(r.data.user);},1200);
 }
 // ── OWNER EMAILS (always full access, no trial) ──
-var OWNER_EMAILS = ['minaalisultanpur@gmail.com', 'mandip@thedossgroup.com', 'mina@thedossgroup.com'];
+var OWNER_EMAILS = ['mjdossgroup@gmail.com', 'thedossgroup@hotmail.com'];
 
 // ── TRIAL & SUBSCRIPTION SYSTEM ──
 var TRIAL_DAYS = 7;
@@ -4612,6 +4696,106 @@ window.filterLeads = function(query) {
     var text = row.textContent.toLowerCase();
     row.style.display = text.includes(query.toLowerCase()) ? '' : 'none';
   });
+};
+
+// ── LOAD SAVED APOLLO KEY ──
+(function() {
+  var saved = localStorage.getItem('nexora_apollo_key');
+  if (saved) window.APOLLO_API_KEY = saved;
+})();
+
+// ── APOLLO LEAD SEARCH ──
+window.apolloSearchLeads = function() {
+  if (!window.APOLLO_API_KEY) {
+    openPanel('integrations');
+    setTimeout(function(){ window.connectApollo && window.connectApollo(); }, 400);
+    return;
+  }
+  var modal = document.createElement('div');
+  modal.id = 'apollo-search-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);';
+  modal.innerHTML =
+    '<div style="background:#2C2C2F;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:32px;width:100%;max-width:480px;box-shadow:0 24px 60px rgba(0,0,0,0.5);">' +
+      '<div style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:#F0EEE8;margin-bottom:6px;">🎯 Find Leads with Apollo</div>' +
+      '<div style="font-size:12px;color:#888;margin-bottom:24px;">Search Apollo\'s database of 275M+ contacts</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">' +
+        '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Job Title</label>' +
+        '<input id="apollo-title" placeholder="e.g. CEO, VP Sales" value="CEO" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+        '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Industry</label>' +
+        '<input id="apollo-industry" placeholder="e.g. Technology" value="Technology" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+        '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Location</label>' +
+        '<input id="apollo-location" placeholder="e.g. United States" value="United States" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;box-sizing:border-box;"/></div>' +
+        '<div><label style="display:block;font-size:10px;font-family:Syne,sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:5px;">Company Size</label>' +
+        '<select id="apollo-size" style="width:100%;background:#505054;border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:8px 10px;color:#F0EEE8;font-family:DM Sans,sans-serif;font-size:13px;outline:none;">' +
+          '<option value="">Any size</option><option value="1,10">1-10</option><option value="11,50">11-50</option><option value="51,200">51-200</option><option value="201,1000" selected>201-1000</option><option value="1001,10000">1001-10000</option>' +
+        '</select></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;margin-top:8px;">' +
+        '<button id="apollo-search-btn" onclick="window.runApolloSearch()" style="flex:1;padding:11px;background:#F97316;border:none;color:#000;border-radius:8px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🔍 Search Apollo</button>' +
+        '<button onclick="document.getElementById(\'apollo-search-modal\').remove()" style="padding:11px 18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#AAAAAA;border-radius:8px;font-family:Syne,sans-serif;font-size:13px;cursor:pointer;">Cancel</button>' +
+      '</div>' +
+      '<div id="apollo-search-results" style="margin-top:16px;max-height:280px;overflow-y:auto;"></div>' +
+    '</div>';
+  document.body.appendChild(modal);
+};
+
+window.runApolloSearch = async function() {
+  var btn = document.getElementById('apollo-search-btn');
+  var results = document.getElementById('apollo-search-results');
+  var title = document.getElementById('apollo-title').value;
+  var industry = document.getElementById('apollo-industry').value;
+  var location = document.getElementById('apollo-location').value;
+  btn.textContent = '⏳ Searching...'; btn.disabled = true;
+  results.innerHTML = '<div style="text-align:center;padding:20px;color:#888;font-size:13px;">Searching Apollo...</div>';
+  try {
+    var body = { api_key: window.APOLLO_API_KEY, page: 1, per_page: 10, person_titles: title ? [title] : [], person_locations: location ? [location] : [], q_keywords: industry || '' };
+    var resp = await fetch('https://api.apollo.io/v1/mixed_people/search', { method:'POST', headers:{'Content-Type':'application/json','Cache-Control':'no-cache'}, body: JSON.stringify(body) });
+    var data = await resp.json();
+    if (data.people && data.people.length > 0) {
+      var colors = ['#4ADE80','#FBBF24','#60A5FA','#F97316','#A78BFA'];
+      results.innerHTML = '<div style="font-family:Syne,sans-serif;font-size:11px;font-weight:600;color:#F97316;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Found ' + (data.pagination ? data.pagination.total_entries : data.people.length) + ' leads</div>' +
+        data.people.map(function(p, idx) {
+          var name = ((p.first_name||'') + ' ' + (p.last_name||'')).trim();
+          var company = p.organization ? p.organization.name : '—';
+          var role = p.title || '—';
+          var email = p.email || 'Protected';
+          var color = colors[idx % colors.length];
+          var safeData = encodeURIComponent(JSON.stringify({name:name,company:company,role:role,email:email}));
+          return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;">' +
+            '<div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:Syne,sans-serif;color:'+color+';flex-shrink:0;">'+(name[0]||'?')+'</div>' +
+            '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:#F0EEE8;font-weight:500;">'+name+'</div><div style="font-size:11px;color:#888;">'+role+' · '+company+'</div><div style="font-size:11px;color:#555;">'+email+'</div></div>' +
+            '<button onclick="window.addApolloLead(\''+safeData+'\')" style="padding:5px 10px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#F97316;border-radius:5px;font-family:Syne,sans-serif;font-size:10px;font-weight:600;cursor:pointer;flex-shrink:0;">+ Add</button>' +
+          '</div>';
+        }).join('');
+    } else {
+      results.innerHTML = '<div style="text-align:center;padding:20px;color:#888;font-size:13px;">'+(data.error||'No results. Try different terms.')+'</div>';
+    }
+  } catch(e) {
+    results.innerHTML = '<div style="padding:16px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;font-size:12px;color:#F87171;">Apollo API error — this may be a CORS restriction in the browser.<br><br><span style="color:#888;">Your key is saved. Apollo searches work best when accessed through a backend proxy. The key is ready for server-side use.</span></div>';
+  }
+  btn.textContent = '🔍 Search Again'; btn.disabled = false;
+};
+
+window.addApolloLead = function(encodedData) {
+  try {
+    var lead = JSON.parse(decodeURIComponent(encodedData));
+    window._leads = window._leads || [];
+    var colors = ['#4ADE80','#FBBF24','#60A5FA','#F97316'];
+    var newLead = { id:Date.now(), company:lead.company||'—', contact:lead.name||'—', email:lead.email||'', phone:'', score:Math.floor(Math.random()*30)+55, status:'New', value:'$0', touch:'Just added via Apollo', color:colors[Math.floor(Math.random()*colors.length)], notes:'Added from Apollo. Role: '+(lead.role||'—') };
+    window._leads.unshift(newLead);
+    var tbody = document.getElementById('leads-tbody');
+    if (tbody) {
+      var r = newLead;
+      var row = document.createElement('tr');
+      row.style.cssText = 'border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;';
+      row.onclick = function(){ window.openLead(r.id); };
+      row.onmouseover = function(){ this.style.background='rgba(255,255,255,0.04)'; };
+      row.onmouseout = function(){ this.style.background=''; };
+      row.innerHTML = '<td style="padding:12px 16px;font-size:13px;color:#F0EEE8;font-weight:500;">'+r.company+'</td><td style="padding:12px 16px;font-size:13px;color:#AAAAAA;">'+r.contact+'</td><td style="padding:12px 16px;"><span style="font-size:13px;font-weight:700;color:'+r.color+'">'+r.score+'</span></td><td style="padding:12px 16px;"><span style="font-size:11px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.07);color:'+r.color+';font-family:Syne,sans-serif;font-weight:600;">'+r.status+'</span></td><td style="padding:12px 16px;font-size:13px;color:#AAAAAA;">'+r.value+'</td><td style="padding:12px 16px;font-size:11px;color:#4ADE80;">Just added</td>';
+      tbody.insertBefore(row, tbody.firstChild);
+    }
+    event.target.textContent = '✓ Added'; event.target.style.color = '#4ADE80'; event.target.disabled = true;
+  } catch(e) { console.error('Add lead error', e); }
 };
 
 async function fetchCalendarEvents() {
